@@ -10,9 +10,21 @@ namespace IMDBdataservice.Service
     {
         //Functions go here
         Title GetTitle(int id);
+
+        Profession GetProfession(int id, String type);
+
         Person GetPerson(int id);
-        CharacterName GetCharacterName(int id, int Id); // Det må ikke hedde det samme::D
+
+        TitleRating GetTitleRating(int id);
+
+        TitleVersion GetTitleVersion(int id);
+
+        Principal GetPrincipal(int id, int ordering);
+
+        CharacterName GetCharacterName(int id, String Name );
+
         IList<Title> GetTitles();
+
     }
 
 }
