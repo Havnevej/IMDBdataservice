@@ -9,5 +9,10 @@ namespace IMDBdataservice.Service
     interface IbaseService
     {
         //Functions go here
+        Title GetTitle(int id);
+        Person GetPerson(int id);
+        CharacterName GetCharacterName(int id, int Id); // Det må ikke hedde det samme::D
+        IList<Title> GetTitles();
     }
+
 }
