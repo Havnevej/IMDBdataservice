@@ -37,7 +37,7 @@ namespace IMDBdataservice.Service
 
         public void CommentMovie(string titleId, string comment)
         {
-           //dont have a comment table, should just add in the project + mapping?
+            //dont have a comment table, should just add in the project + mapping?
         }
 
         public void GetSearchHistory()
@@ -53,6 +53,8 @@ namespace IMDBdataservice.Service
         public void GetTop10HighesRatedMovies() { }
         public void GetMostFrequentPerson() { }
         public void SeeRatingOfMovie() { }
+
+        #region functions todo
 
         /*
         public Profession GetProfession(int id, string type)
@@ -80,11 +82,8 @@ namespace IMDBdataservice.Service
             throw new NotImplementedException();
         }
 
-        public CharacterName GetCharacterName(int id, string Name)
-        {
-            throw new NotImplementedException();
-        }
+        public CharacterName GetCharacterName(int id, string Name){throw new NotImplementedException();}
         */
-        
+        #endregion
     }
 }

@@ -22,10 +22,6 @@ namespace IMDBdataservice.Service
         public void SeeRatingOfMovie();
 
 
-
-
-
-
         /*
         Title GetTitle(int id);
         Profession GetProfession(int id, String type);
