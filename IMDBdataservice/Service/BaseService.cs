@@ -14,11 +14,9 @@ namespace IMDBdataservice.Service
         public List<Title> GetTitle(string search)
         {
             List<Title> orderList = new();
-            orderList = ctx.Titles.Where(x => x.PrimaryTitle == search).ToListAsync().Result;
-
-            return orderList;
+            orderList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(search.ToLower())).ToList();
+                return orderList;
         }
-
 
         public void BookmarkMovie(string titleId, string userId)
         {
