@@ -12,7 +12,7 @@ namespace IMDBdataservice.Service
         public List<Title> GetTitle(string search);
         public bool BookmarkMovie(string titleId, string userId);
         public void CommentMovie(string titleId, string comment);
-        public void GetSearchHistory();
+        public List<SearchHistory> GetSearchHistory();
         public bool BookmarkPerson(string personId, string userId);
         public void RateMovie();
         public void RatePerson();

@@ -35,10 +35,11 @@ namespace IMDBdataservice.Service
             
         }
 
-        public void GetSearchHistory()
+        public List<SearchHistory> GetSearchHistory()
         {
-
-
+            List<SearchHistory> result = new();
+            result = ctx.SearchHistories.ToList();
+            return result;
         }
 
         public bool BookmarkPerson(string personId, string userId) {
