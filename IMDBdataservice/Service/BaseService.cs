@@ -18,7 +18,7 @@ namespace IMDBdataservice.Service
                 return orderList;
         }
 
-        public void BookmarkMovie(string titleId, string userId)
+        public bool BookmarkMovie(string titleId, string userId)
         {
             BookmarkTitle bt = new()
             {
@@ -26,16 +26,13 @@ namespace IMDBdataservice.Service
                 UserId = userId
             };
 
-            //shouldnt this be autoincrementet in the db?
-            //bt.TitleId = ctx.BookmarkTitles.Max(x => x.TitleId) + 1;
             ctx.Add(bt);
-            ctx.SaveChanges();
-
+            return ctx.SaveChanges() > 0;
         }
 
         public void CommentMovie(string titleId, string comment)
         {
-            //dont have a comment table, should just add in the project + mapping?
+            
         }
 
         public void GetSearchHistory()
@@ -44,7 +41,16 @@ namespace IMDBdataservice.Service
 
         }
 
-        public void BookmarkPerson() { }
+        public bool BookmarkPerson(string personId, string userId) {
+            BookmarkPerson bt = new()
+            {
+                PersonId = personId,
+                UserId = userId
+            };
+
+            ctx.Add(bt);
+            return ctx.SaveChanges() > 0;
+        }
         public void RateMovie() { }
         public void RatePerson() { }
         public void SearchByGenre() { }

@@ -10,10 +10,10 @@ namespace IMDBdataservice.Service
     {
         //Functions go here
         public List<Title> GetTitle(string search);
-        public void BookmarkMovie(string titleId, string userId);
+        public bool BookmarkMovie(string titleId, string userId);
         public void CommentMovie(string titleId, string comment);
         public void GetSearchHistory();
-        public void BookmarkPerson();
+        public bool BookmarkPerson(string personId, string userId);
         public void RateMovie();
         public void RatePerson();
         public void SearchByGenre();
