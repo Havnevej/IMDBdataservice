@@ -62,8 +62,24 @@ namespace IMDBdataservice.Service
             return result;
         }
         public void GetMostFrequentPerson() { }
-        public void SeeRatingOfMovie() { }
 
+        /*public async Task<List<Title>> SeeRatingOfMovie(string input) // breaks compiler dont know why
+        {
+            List<Title> returns = new();
+            await ctx.Titles.Include(x => x.titlerating).Where(x => x.PrimaryTitle.ToLower().Contains(input.ToLower())).ForEachAsync(x => 
+            {
+                returns.Add(new Title
+                {
+                    PrimaryTitle = x.PrimaryTitle,
+                    titlerating = x.titlerating
+                });
+            });
+
+            return returns;
+            
+        }*/
+
+       
         #region functions todo
 
         /*

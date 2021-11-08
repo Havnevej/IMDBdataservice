@@ -15,6 +15,11 @@ namespace IMDBdataservice
         public string StartYear { get; set; }
         public string EndYear { get; set; }
         public int? RunTimeMinutes { get; set; }
+
+        public TitleRating titlerating { get; set;}
+        
+
+        //public Genre genre { get; set; }
     }
 
 }
