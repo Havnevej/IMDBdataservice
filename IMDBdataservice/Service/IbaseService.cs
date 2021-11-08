@@ -17,7 +17,7 @@ namespace IMDBdataservice.Service
         public void RateMovie();
         public void RatePerson();
         public void SearchByGenre();
-        public void GetTop10HighesRatedMovies();
+        public List<Title> GetTop10HighesRatedMovies();
         public void GetMostFrequentPerson();
         public void SeeRatingOfMovie();
 

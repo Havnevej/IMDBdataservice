@@ -30,7 +30,7 @@ namespace IMDBdataservice.Service
             return ctx.SaveChanges() > 0;
         }
 
-        public void CommentMovie(string titleId, string comment)
+        public void CommentMovie(string titleId, string comment) //missing
         {
             
         }
@@ -52,10 +52,15 @@ namespace IMDBdataservice.Service
             ctx.Add(bt);
             return ctx.SaveChanges() > 0;
         }
-        public void RateMovie() { }
-        public void RatePerson() { }
+        public void RateMovie() {}
+        public void RatePerson() {}
+
         public void SearchByGenre() { }
-        public void GetTop10HighesRatedMovies() { }
+        public List<Title> GetTop10HighesRatedMovies() {
+            List<Title> result = new();
+            result = ctx.Titles.Include(x => x.titlerating).Where(x => x.titlerating.RatingAvg > 8).OrderByDescending(x => x.titlerating.RatingAvg).Take(10).ToList();
+            return result;
+        }
         public void GetMostFrequentPerson() { }
         public void SeeRatingOfMovie() { }
 
