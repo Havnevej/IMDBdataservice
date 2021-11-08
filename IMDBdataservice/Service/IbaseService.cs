@@ -19,7 +19,7 @@ namespace IMDBdataservice.Service
         public void SearchByGenre();
         public List<Title> GetTop10HighesRatedMovies();
         public void GetMostFrequentPerson();
-        public Task<List<Title>> SeeRatingOfMovie(string input);
+        //public Task<List<Title>> SeeRatingOfMovie(string input);
 
 
         /*
