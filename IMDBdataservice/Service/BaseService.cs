@@ -52,7 +52,18 @@ namespace IMDBdataservice.Service
             ctx.Add(bt);
             return ctx.SaveChanges() > 0;
         }
-        public void RateMovie() {}
+        public bool RateMovie(string userId, string titleId, string rating) {
+            UserTitleRating rt = new()
+            {
+                TitleId = titleId,
+                UserId = userId,
+                Rating = rating
+            };
+
+            ctx.Add(rt);
+            return ctx.SaveChanges() > 0;
+
+        }
         public void RatePerson() {}
 
         public async Task<List<Title>> SearchByGenre(string genre) {

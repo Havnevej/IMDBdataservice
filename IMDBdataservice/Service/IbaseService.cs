@@ -15,7 +15,7 @@ namespace IMDBdataservice.Service
         public void CommentMovie(string titleId, string comment);
         public List<SearchHistory> GetSearchHistory();
         public bool BookmarkPerson(string personId, string userId);
-        public void RateMovie();
+        public bool RateMovie(string userId, string titleId, string rating);
         public void RatePerson();
         public Task<List<Title>> SearchByGenre(string genre);
         public Task<List<Title>> GetTop10HighesRatedMovies();
