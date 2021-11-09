@@ -61,7 +61,16 @@ namespace IMDBdataservice.Service
             result = ctx.Titles.Include(x => x.titlerating).Where(x => x.titlerating.RatingAvg > 8).OrderByDescending(x => x.titlerating.RatingAvg).Take(10).ToList();
             return result;
         }
+
         public void GetMostFrequentPerson() { }
+
+        public List<Person> GetPerson(string search)
+        {
+            List<Person> orderList = new();
+            orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
+            return orderList;
+        }
+
 
         /*public async Task<List<Title>> SeeRatingOfMovie(string input) // breaks compiler dont know why
         {
@@ -79,7 +88,7 @@ namespace IMDBdataservice.Service
             
         }*/
 
-       
+
         #region functions todo
 
         /*

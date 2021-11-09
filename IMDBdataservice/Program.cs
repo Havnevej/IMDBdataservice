@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IMDBdataservice.Service;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -9,12 +10,13 @@ namespace IMDBdataservice
         static void Main(string[] args)
         {
             imdbContext imdb = new imdbContext();
-            Title aTitle = new() { IsAdult = true, PrimaryTitle = "Husseins Sextape", RunTimeMinutes = 1 };
 
-            var x = imdb.Titles.ToListAsync().Result;
+            BaseService bb = new BaseService();
+
+            var x = bb.GetPerson("ZZ");
             foreach (var item in x)
             {
-                Console.WriteLine(item.PrimaryTitle);
+                Console.WriteLine(item.PersonName);
             }
         }
     }
