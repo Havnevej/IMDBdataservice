@@ -15,6 +15,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.10" />
+    <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="xunit" />
+  </ItemGroup>
 </Project>
