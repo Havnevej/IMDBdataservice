@@ -44,7 +44,7 @@ namespace IMDBdataservice
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
                 optionsBuilder.EnableSensitiveDataLogging();
-                optionsBuilder.UseNpgsql("host=localhost;database=imdb;Username=postgres;Password=postgres");
+                optionsBuilder.UseNpgsql("host=localhost;database=imdb;Username=postgres;Password=postgres"); //remember to change database name and pwd :)
             }
         }
 
@@ -55,7 +55,6 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<BookmarkPerson>(entity =>
             {
-                entity.HasNoKey();
 
                 entity.ToTable("bookmark_person");
 
@@ -67,10 +66,13 @@ namespace IMDBdataservice
                     .HasColumnType("character varying")
                     .HasColumnName("user_id");
             });
+            modelBuilder.Entity<BookmarkPerson>()  //composite key for bookmark title
+                .HasKey(c => new { c.PersonId, c.UserId });
+
 
             modelBuilder.Entity<BookmarkTitle>(entity =>
             {
-                entity.HasNoKey();
+               
 
                 entity.ToTable("bookmark_title");
 
@@ -81,7 +83,10 @@ namespace IMDBdataservice
                 entity.Property(e => e.UserId)
                     .HasColumnType("character varying")
                     .HasColumnName("user_id");
+
             });
+            modelBuilder.Entity<BookmarkTitle>()  //composite key for bookmark title
+                .HasKey(c => new { c.TitleId, c.UserId});
 
             modelBuilder.Entity<CharacterName>(entity =>
             {
