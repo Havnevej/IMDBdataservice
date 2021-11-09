@@ -66,14 +66,11 @@ namespace IMDBdataservice.Service
             return result;
         }
         
-        /*public List<Person> GetMostFrequentPerson() { //freq actor based on another actor and their work together.
+        public async Task<List<Person>> GetMostFrequentPerson() { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
             List<Person> result = new();
-
-
-
-
+            result = ctx.People.Include(x => x.knownForTitles).Where(x => x.)
             return
-        }*/
+        }
 
 
         public async Task<List<Title>> SeeRatingOfMovie(string id)
