@@ -30,7 +30,7 @@ namespace IMDBdataservice.Service
             return ctx.SaveChanges() > 0;
         }
 
-        public void CommentMovie(string titleId, string comment) //missing
+        public void CommentMovie(string titleId, string comment) //good to have but not prio.
         {
             
         }
@@ -55,18 +55,31 @@ namespace IMDBdataservice.Service
         public void RateMovie() {}
         public void RatePerson() {}
 
-        public void SearchByGenre() { }
-        public List<Title> GetTop10HighesRatedMovies() {
+        public async Task<List<Title>> SearchByGenre(string genre) {
             List<Title> result = new();
-            result = ctx.Titles.Include(x => x.titlerating).Where(x => x.titlerating.RatingAvg > 8).OrderByDescending(x => x.titlerating.RatingAvg).Take(10).ToList();
+            result = ctx.Titles.Include(x => x.genre).Where(x => x.genre.GenreName == genre).ToList();
             return result;
         }
-        public void GetMostFrequentPerson() { }
+        public async Task<List<Title>> GetTop10HighesRatedMovies() { //works but too many top movies with rating 10
+            List<Title> result = new();
+            result = ctx.Titles.Include(x => x.titlerating).OrderByDescending(x => x.titlerating.RatingAvg).Take(10).ToList();
+            return result;
+        }
+        
+        /*public List<Person> GetMostFrequentPerson() { //freq actor based on another actor and their work together.
+            List<Person> result = new();
 
-        /*public async Task<List<Title>> SeeRatingOfMovie(string input) // breaks compiler dont know why
+
+
+
+            return
+        }*/
+
+
+        public async Task<List<Title>> SeeRatingOfMovie(string id)
         {
             List<Title> returns = new();
-            await ctx.Titles.Include(x => x.titlerating).Where(x => x.PrimaryTitle.ToLower().Contains(input.ToLower())).ForEachAsync(x => 
+            await ctx.Titles.Include(x => x.titlerating).Where(x => x.TitleId == id).ForEachAsync(x => 
             {
                 returns.Add(new Title
                 {
@@ -76,8 +89,7 @@ namespace IMDBdataservice.Service
             });
 
             return returns;
-            
-        }*/
+        }
 
        
         #region functions todo

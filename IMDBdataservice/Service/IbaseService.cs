@@ -16,10 +16,10 @@ namespace IMDBdataservice.Service
         public bool BookmarkPerson(string personId, string userId);
         public void RateMovie();
         public void RatePerson();
-        public void SearchByGenre();
-        public List<Title> GetTop10HighesRatedMovies();
-        public void GetMostFrequentPerson();
-        //public Task<List<Title>> SeeRatingOfMovie(string input);
+        public Task<List<Title>> SearchByGenre(string genre);
+        public Task<List<Title>> GetTop10HighesRatedMovies();
+        //public void GetMostFrequentPerson();
+        public Task<List<Title>> SeeRatingOfMovie(string input);
 
 
         /*

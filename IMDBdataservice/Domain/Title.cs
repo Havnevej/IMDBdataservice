@@ -17,7 +17,8 @@ namespace IMDBdataservice
         public int? RunTimeMinutes { get; set; }
 
         public TitleRating titlerating { get; set;}
-        
+        public Genre genre { get; set;}
+
 
         //public Genre genre { get; set; }
     }
