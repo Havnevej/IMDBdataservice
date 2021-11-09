@@ -65,12 +65,19 @@ namespace IMDBdataservice.Service
             result = ctx.Titles.Include(x => x.titlerating).OrderByDescending(x => x.titlerating.RatingAvg).Take(10).ToList();
             return result;
         }
-        
-        /*public async Task<List<Person>> GetMostFrequentPerson() { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
+
+        public async Task<List<Person>> GetMostFrequentPerson(string id) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
             List<Person> result = new();
-            result = ctx.People.Include(x => x.knownForTitles).Where(x => x.)
-            return
-        }*/
+            List<Title> titles_list = ctx.Titles.Include(x=>x.knownForTitles).Where(x => x.knownForTitles.PersonId == id).ToList();
+            
+            titles_list.ForEach(x => {
+                List<Person> tt = new();
+                tt = ctx.People.Include(p => p.knownForTitles).Where(p => p.knownForTitles.TitleId == x.TitleId).ToList();
+                tt.ForEach(x => result.Add(x));
+            });
+
+            return result;
+        }
 
         public List<Person> GetPerson(string search)
         {
