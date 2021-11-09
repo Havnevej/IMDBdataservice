@@ -20,7 +20,7 @@ namespace IMDBdataservice
         public virtual DbSet<BookmarkPerson> BookmarkPeople { get; set; }
         public virtual DbSet<BookmarkTitle> BookmarkTitles { get; set; }
         public virtual DbSet<CharacterName> CharacterNames { get; set; }
-        public virtual DbSet<Crew> Crews { get; set; }
+        public virtual DbSet<Director> Directors { get; set; }
         public virtual DbSet<Episode> Episodes { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<KnownForTitle> KnownForTitles { get; set; }
@@ -36,15 +36,14 @@ namespace IMDBdataservice
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserTitleRating> UserTitleRatings { get; set; }
         public virtual DbSet<WordIndex> WordIndices { get; set; }
+        public virtual DbSet<Writer> Writers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
-                optionsBuilder.EnableSensitiveDataLogging();
-                optionsBuilder.UseNpgsql("host=localhost;database=imdb;Username=postgres;Password=postgres"); //remember to change database name and pwd :)
+                optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=imdb;Username=postgres;Password=postgres");
             }
         }
 
@@ -55,38 +54,35 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<BookmarkPerson>(entity =>
             {
+                entity.HasKey(e => new { e.UserId, e.PersonId })
+                    .HasName("bookmark_person_pkey");
 
                 entity.ToTable("bookmark_person");
 
-                entity.Property(e => e.PersonId)
-                    .HasColumnType("character varying")
-                    .HasColumnName("person_id");
-
                 entity.Property(e => e.UserId)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("user_id");
-            });
-            modelBuilder.Entity<BookmarkPerson>()  //composite key for bookmark title
-                .HasKey(c => new { c.PersonId, c.UserId });
 
+                entity.Property(e => e.PersonId)
+                    .HasMaxLength(255)
+                    .HasColumnName("person_id");
+            });
 
             modelBuilder.Entity<BookmarkTitle>(entity =>
             {
-               
+                entity.HasKey(e => new { e.UserId, e.TitleId })
+                    .HasName("bookmark_title_pkey");
 
                 entity.ToTable("bookmark_title");
 
-                entity.Property(e => e.TitleId)
-                    .HasColumnType("character varying")
-                    .HasColumnName("title_id");
-
                 entity.Property(e => e.UserId)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("user_id");
 
+                entity.Property(e => e.TitleId)
+                    .HasMaxLength(255)
+                    .HasColumnName("title_id");
             });
-            modelBuilder.Entity<BookmarkTitle>()  //composite key for bookmark title
-                .HasKey(c => new { c.TitleId, c.UserId});
 
             modelBuilder.Entity<CharacterName>(entity =>
             {
@@ -108,32 +104,20 @@ namespace IMDBdataservice
                     .HasColumnName("character_name");
             });
 
-            modelBuilder.Entity<Crew>(entity =>
+            modelBuilder.Entity<Director>(entity =>
             {
-                entity.HasKey(e => new { e.TitleId, e.Ordering })
-                    .HasName("crew_pkey");
+                entity.HasKey(e => new { e.DirectorId, e.TitleId })
+                    .HasName("director_pkey");
 
-                entity.ToTable("crew");
+                entity.ToTable("director");
+
+                entity.Property(e => e.DirectorId)
+                    .HasMaxLength(255)
+                    .HasColumnName("director_id");
 
                 entity.Property(e => e.TitleId)
                     .HasMaxLength(255)
                     .HasColumnName("title_id");
-
-                entity.Property(e => e.Ordering).HasColumnName("ordering");
-
-                entity.Property(e => e.AdditionalProfession)
-                    .HasMaxLength(255)
-                    .HasColumnName("additional_profession");
-
-                entity.Property(e => e.IsPrincipal).HasColumnName("is_principal");
-
-                entity.Property(e => e.PersonId)
-                    .HasMaxLength(255)
-                    .HasColumnName("person_id");
-
-                entity.Property(e => e.PrimaryProfession)
-                    .HasMaxLength(255)
-                    .HasColumnName("primary_profession");
             });
 
             modelBuilder.Entity<Episode>(entity =>
@@ -208,13 +192,15 @@ namespace IMDBdataservice
                 entity.Property(e => e.Plot).HasColumnName("plot");
 
                 entity.Property(e => e.Poster)
-                    .HasMaxLength(256)
+                    .HasMaxLength(255)
                     .HasColumnName("poster");
             });
 
             modelBuilder.Entity<Person>(entity =>
             {
                 entity.ToTable("person");
+
+                entity.HasIndex(e => e.PersonName, "h");
 
                 entity.Property(e => e.PersonId)
                     .HasMaxLength(255)
@@ -235,18 +221,19 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<PersonRating>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.PersonId)
+                    .HasName("person_rating_pkey");
 
                 entity.ToTable("person_rating");
 
-                entity.Property(e => e.NumVotes).HasColumnName("num_votes");
-
                 entity.Property(e => e.PersonId)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("person_id");
 
+                entity.Property(e => e.NumVotes).HasColumnName("num_votes");
+
                 entity.Property(e => e.PersonName)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("person_name");
 
                 entity.Property(e => e.Rating).HasColumnName("rating");
@@ -254,9 +241,17 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<Principal>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.TitleId, e.Ordering })
+                    .HasName("principals_pkey");
 
                 entity.ToTable("principals");
+
+                entity.Property(e => e.TitleId)
+                    .HasMaxLength(10)
+                    .HasColumnName("title_id")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Ordering).HasColumnName("ordering");
 
                 entity.Property(e => e.Category)
                     .HasMaxLength(255)
@@ -266,18 +261,10 @@ namespace IMDBdataservice
                     .HasMaxLength(255)
                     .HasColumnName("job");
 
-                entity.Property(e => e.Ordering).HasColumnName("ordering");
-
                 entity.Property(e => e.PersonId)
                     .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("person_id");
-
-                entity.Property(e => e.TitleId)
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .HasColumnName("title_id")
-                    .IsFixedLength(true);
             });
 
             modelBuilder.Entity<Profession>(entity =>
@@ -298,21 +285,22 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<SearchHistory>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.UserId, e.Date })
+                    .HasName("search_history_pkey");
 
                 entity.ToTable("search_history");
 
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .HasColumnName("user_id");
+
                 entity.Property(e => e.Date)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("date");
 
                 entity.Property(e => e.SearchString)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("search_string");
-
-                entity.Property(e => e.UserId)
-                    .HasColumnType("character varying")
-                    .HasColumnName("user_id");
             });
 
             modelBuilder.Entity<Title>(entity =>
@@ -374,7 +362,7 @@ namespace IMDBdataservice
                 entity.ToTable("title_versions");
 
                 entity.Property(e => e.TitleId)
-                    .HasMaxLength(255)
+                    .HasMaxLength(1024)
                     .HasColumnName("title_id");
 
                 entity.Property(e => e.TitleVersion1)
@@ -382,10 +370,12 @@ namespace IMDBdataservice
                     .HasColumnName("title_version");
 
                 entity.Property(e => e.Attributes)
-                    .HasMaxLength(255)
+                    .HasMaxLength(1024)
                     .HasColumnName("attributes");
 
-                entity.Property(e => e.IsOriginalTitle).HasColumnName("is_original_title");
+                entity.Property(e => e.IsOriginalTitle)
+                    .HasMaxLength(255)
+                    .HasColumnName("is_original_title");
 
                 entity.Property(e => e.Language)
                     .HasMaxLength(255)
@@ -396,7 +386,7 @@ namespace IMDBdataservice
                     .HasColumnName("region");
 
                 entity.Property(e => e.TitleName)
-                    .HasMaxLength(255)
+                    .HasMaxLength(1024)
                     .HasColumnName("title_name");
 
                 entity.Property(e => e.Types)
@@ -406,40 +396,39 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("user");
 
-                entity.Property(e => e.Password)
-                    .HasColumnType("character varying")
-                    .HasColumnName("password");
-
                 entity.Property(e => e.UserId)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("user_id");
 
+                entity.Property(e => e.Password)
+                    .HasMaxLength(255)
+                    .HasColumnName("password");
+
                 entity.Property(e => e.UserName)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("user_name");
             });
 
             modelBuilder.Entity<UserTitleRating>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.UserId, e.TitleId })
+                    .HasName("user_title_rating_pkey");
 
                 entity.ToTable("user_title_rating");
 
-                entity.Property(e => e.Rating)
-                    .HasColumnType("character varying")
-                    .HasColumnName("rating");
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .HasColumnName("user_id");
 
                 entity.Property(e => e.TitleId)
-                    .HasColumnType("character varying")
+                    .HasMaxLength(255)
                     .HasColumnName("title_id");
 
-                entity.Property(e => e.UserId)
-                    .HasColumnType("character varying")
-                    .HasColumnName("user_id");
+                entity.Property(e => e.Rating)
+                    .HasMaxLength(255)
+                    .HasColumnName("rating");
             });
 
             modelBuilder.Entity<WordIndex>(entity =>
@@ -465,6 +454,22 @@ namespace IMDBdataservice
                 entity.Property(e => e.Lexeme)
                     .HasMaxLength(255)
                     .HasColumnName("lexeme");
+            });
+
+            modelBuilder.Entity<Writer>(entity =>
+            {
+                entity.HasKey(e => new { e.WriterId, e.TitleId })
+                    .HasName("writer_pkey");
+
+                entity.ToTable("writer");
+
+                entity.Property(e => e.WriterId)
+                    .HasMaxLength(255)
+                    .HasColumnName("writer_id");
+
+                entity.Property(e => e.TitleId)
+                    .HasMaxLength(255)
+                    .HasColumnName("title_id");
             });
 
             OnModelCreatingPartial(modelBuilder);

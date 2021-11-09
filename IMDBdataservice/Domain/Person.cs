@@ -11,6 +11,5 @@ namespace IMDBdataservice
         public string PersonName { get; set; }
         public string Birthyear { get; set; }
         public string Deathyear { get; set; }
-        public KnownForTitle knownForTitles { get; set; }
     }
 }

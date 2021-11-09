@@ -14,6 +14,6 @@ namespace IMDBdataservice
         public string Language { get; set; }
         public string Types { get; set; }
         public string Attributes { get; set; }
-        public bool? IsOriginalTitle { get; set; }
+        public string IsOriginalTitle { get; set; }
     }
 }
