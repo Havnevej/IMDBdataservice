@@ -72,8 +72,15 @@ namespace IMDBdataservice.Service
             return
         }
 
+        public List<Person> GetPerson(string search)
+        {
+            List<Person> orderList = new();
+            orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
+            return orderList;
+        }
 
-        public async Task<List<Title>> SeeRatingOfMovie(string id)
+
+        /*public async Task<List<Title>> SeeRatingOfMovie(string input) // breaks compiler dont know why
         {
             List<Title> returns = new();
             await ctx.Titles.Include(x => x.titlerating).Where(x => x.TitleId == id).ForEachAsync(x => 
@@ -88,7 +95,7 @@ namespace IMDBdataservice.Service
             return returns;
         }
 
-       
+
         #region functions todo
 
         /*

@@ -44,7 +44,7 @@ namespace IMDBdataservice
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
                 optionsBuilder.EnableSensitiveDataLogging();
-                optionsBuilder.UseNpgsql("host=localhost;database=test_db;Username=postgres;Password=Amazing1234"); //remember to change database name and pwd :)
+                optionsBuilder.UseNpgsql("host=localhost;database=imdb;Username=postgres;Password=postgres"); //remember to change database name and pwd :)
             }
         }
 

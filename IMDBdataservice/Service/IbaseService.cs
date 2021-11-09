@@ -10,6 +10,7 @@ namespace IMDBdataservice.Service
     {
         //Functions go here
         public List<Title> GetTitle(string search);
+        public List<Person> GetPerson(string search);
         public bool BookmarkMovie(string titleId, string userId);
         public void CommentMovie(string titleId, string comment);
         public List<SearchHistory> GetSearchHistory();
@@ -25,11 +26,11 @@ namespace IMDBdataservice.Service
         /*
         Title GetTitle(int id);
         Profession GetProfession(int id, String type);
-        Person GetPerson(int id);
+        Person GetPerson(string search);
         TitleRating GetTitleRating(int id);
         TitleVersion GetTitleVersion(int id);
         Principal GetPrincipal(int id, int ordering);
-        CharacterName GetCharacterName(int id, String Name );
+        CharacterName GetCharacterName(int id, String Name);
         IList<Title> GetTitles();
         */
 
