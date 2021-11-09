@@ -66,11 +66,11 @@ namespace IMDBdataservice.Service
             return result;
         }
         
-        public async Task<List<Person>> GetMostFrequentPerson() { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
+        /*public async Task<List<Person>> GetMostFrequentPerson() { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
             List<Person> result = new();
             result = ctx.People.Include(x => x.knownForTitles).Where(x => x.)
             return
-        }
+        }*/
 
         public List<Person> GetPerson(string search)
         {
@@ -80,7 +80,7 @@ namespace IMDBdataservice.Service
         }
 
 
-        /*public async Task<List<Title>> SeeRatingOfMovie(string input) // breaks compiler dont know why
+        public async Task<List<Title>> SeeRatingOfMovie(string id)
         {
             List<Title> returns = new();
             await ctx.Titles.Include(x => x.titlerating).Where(x => x.TitleId == id).ForEachAsync(x => 

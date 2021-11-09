@@ -19,8 +19,8 @@ namespace IMDBdataservice.Service
         public void RatePerson();
         public Task<List<Title>> SearchByGenre(string genre);
         public Task<List<Title>> GetTop10HighesRatedMovies();
-        public Task<List<Person>> GetMostFrequentPerson();
-        public Task<List<Title>> SeeRatingOfMovie(string input);
+        //public Task<List<Person>> GetMostFrequentPerson();
+        public Task<List<Title>> SeeRatingOfMovie(string id);
 
 
         /*

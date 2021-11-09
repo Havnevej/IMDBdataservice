@@ -2,22 +2,23 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace IMDBdataservice
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             imdbContext imdb = new imdbContext();
-
             BaseService bb = new BaseService();
-
-            var x = bb.GetPerson("ZZ");
-            foreach (var item in x)
+            var t = await bb.SeeRatingOfMovie("tt0057345");
+            foreach(var item in t)
             {
-                Console.WriteLine(item.PersonName);
+                Console.WriteLine(item.PrimaryTitle + item.titlerating.RatingAvg);
             }
+
+
         }
     }
 }
