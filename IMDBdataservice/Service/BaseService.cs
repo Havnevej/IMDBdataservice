@@ -26,16 +26,19 @@ namespace IMDBdataservice.Service
             orderList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(search.ToLower())).ToList();
                 return orderList;
         }
-
+        Title IbaseService.GetTitle(string titleId)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<List<Title>> SeeRatingOfTitle(string id)
         {
             List<Title> returns = new();
-            await ctx.Titles.Include(x => x.titlerating).Where(x => x.TitleId == id).ForEachAsync(x =>
+            await ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).ForEachAsync(x =>
             {
                 returns.Add(new Title
                 {
                     PrimaryTitle = x.PrimaryTitle,
-                    titlerating = x.titlerating
+                    TitleRating = x.TitleRating
                 });
             });
 
@@ -73,13 +76,14 @@ namespace IMDBdataservice.Service
         public async Task<List<Title>> SearchTitleByGenre(string genre)
         {
             List<Title> result = new();
-            result = ctx.Titles.Include(x => x.genre).Where(x => x.genre.ToString() == genre).ToList();
+#warning This has changed, genres is a list, make new logic
+            result = ctx.Titles.Include(x => x.Genres.First()).Where(x => x.Genres.First().ToString() == genre).ToList();
             return result;
         }
         public async Task<List<Title>> GetTopTitles(int top)
-        { //works but too many top movies with rating 10
+        { //works but too many top movies with rating 10*
             List<Title> result = new();
-            result = ctx.Titles.Include(x => x.titlerating).OrderByDescending(x => x.titlerating).Take(top).ToList();
+            result = ctx.Titles.Include(x => x.TitleRating).OrderByDescending(x => x.TitleRating).Take(top).ToList();
             return result;
         }
 
@@ -120,12 +124,13 @@ namespace IMDBdataservice.Service
         public void RatePerson() {}
 
         public async Task<List<Person>> GetMostFrequentPerson(string id) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
-            List<Person> result = new();
-            List<Title> titles_list = ctx.Titles.Include(x=>x.knownForTitles).Where(x => x.knownForTitles == id).ToList();
+            List<Person> result = new(); // Changed function
+#warning Changed function with new context, check if works
+            List<Title> titles_list = ctx.Titles.Include(x=>x.KnownForTitles).Where(x => x.KnownForTitles.FirstOrDefault().ToString().Contains(id)).ToList();
             
             titles_list.ForEach(x => {
                 List<Person> tt = new();
-                tt = ctx.People.Include(p => p.knownForTitles).Where(p => p.knownForTitles == x.TitleId).ToList();
+                tt = ctx.People.Include(p => p).Where(p => p.PersonId == x.TitleId).ToList();
                 tt.ForEach(x => result.Add(x));
             });
 
@@ -138,13 +143,6 @@ namespace IMDBdataservice.Service
             orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
             return orderList;
         }
-
-
-        Title IbaseService.GetTitle(string titleId)
-        {
-            throw new NotImplementedException();
-        }
-
         Person IbaseService.GetPerson(string personId)
         {
             throw new NotImplementedException();
