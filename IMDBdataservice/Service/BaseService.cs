@@ -84,7 +84,7 @@ namespace IMDBdataservice.Service
         public async Task<List<Title>> GetTopTitles(int top)
         { //works but too many top movies with rating 10*
             List<Title> result = new();
-            result = ctx.Titles.Include(x => x.TitleRating).OrderByDescending(x => x.TitleRating).Take(top).ToList();
+            result = ctx.Titles.Include(x => x.TitleRating).OrderByDescending(x => x.TitleRating).Take(top).ToListAsync().Result;
             return result;
         }
 

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Routing;
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/title")]
+    [Route("api/titles")]
     public class TitleController : ControllerBase, IOurcontroller<Title>
     {
         IbaseService _dataService;
@@ -34,6 +34,19 @@ namespace WebAPI.Controllers
             }
 
             return Ok(title);
+        }        
+        [HttpGet]
+        public IActionResult GetTitles()
+        {
+            var titles_to_get = 20; //temp, needs to be in parameter
+            var title = _dataService.GetTopTitles(titles_to_get);
+
+            if (title == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(title.Result);
         }
         
         string IOurcontroller<Title>.GetUrl(Title obj)
