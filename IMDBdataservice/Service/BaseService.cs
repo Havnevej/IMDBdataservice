@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IMDBdataservice.Service
 {
-    class BaseService : IbaseService
+    public class BaseService : IbaseService
     {
         private static readonly imdbContext ctx = new();
 
