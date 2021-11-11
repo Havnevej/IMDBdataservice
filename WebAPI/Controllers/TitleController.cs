@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
             return Ok(title);
         }        
         [HttpGet]
-        public IActionResult GetTitles(int amount, int page) //not implemented
+        public IActionResult GetTitles(int amount, int page) //not implemented ?depth=100&?page=2 example
         {
             var titles_to_get = 20; //temp, needs to be in parameter
             var title = _dataService.GetTopTitles(titles_to_get);
