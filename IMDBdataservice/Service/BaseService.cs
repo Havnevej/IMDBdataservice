@@ -26,7 +26,7 @@ namespace IMDBdataservice.Service
             orderList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(search.ToLower())).ToList();
                 return orderList;
         }
-        Title IbaseService.GetTitle(string id)
+        public Title GetTitle(string id)
         {
             var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
             return title;
@@ -144,7 +144,7 @@ namespace IMDBdataservice.Service
             orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
             return orderList;
         }
-        Person IbaseService.GetPerson(string id)
+        public Person GetPerson(string id)
         {
             var person = ctx.People.FirstOrDefault(x => x.PersonId == id);
             return person;
