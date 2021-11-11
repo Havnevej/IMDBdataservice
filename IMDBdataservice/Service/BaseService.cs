@@ -26,9 +26,10 @@ namespace IMDBdataservice.Service
             orderList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(search.ToLower())).ToList();
                 return orderList;
         }
-        Title IbaseService.GetTitle(string titleId)
+        Title IbaseService.GetTitle(string id)
         {
-            throw new NotImplementedException();
+            var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
+            return title;
         }
         public async Task<List<Title>> SeeRatingOfTitle(string id)
         {
@@ -143,9 +144,10 @@ namespace IMDBdataservice.Service
             orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
             return orderList;
         }
-        Person IbaseService.GetPerson(string personId)
+        Person IbaseService.GetPerson(string id)
         {
-            throw new NotImplementedException();
+            var person = ctx.People.FirstOrDefault(x => x.PersonId == id);
+            return person;
         }
 
         
