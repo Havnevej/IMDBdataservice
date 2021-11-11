@@ -12,14 +12,15 @@ namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("api/title")]
-    public class TitleController : ControllerBase, IOurcontroller
+    public class TitleController : ControllerBase, IOurcontroller<Title>
     {
-        readonly IbaseService _dataService;
+        IbaseService _dataService;
         LinkGenerator _linkGenerator;
 
-        public TitleController(ILogger<TitleController> logger)
+        public TitleController(ILogger<TitleController> logger, IbaseService dataService, LinkGenerator linkGenerator)
         {
-
+            _dataService = dataService;
+            _linkGenerator = linkGenerator;
         }
 
         [HttpGet("{id}", Name = nameof(GetTitle))]
@@ -34,10 +35,10 @@ namespace WebAPI.Controllers
 
             return Ok(title);
         }
-
-        private string GetUrl(Title title)
+        
+        string IOurcontroller<Title>.GetUrl(Title obj)
         {
-            return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { title.TitleId });
+            return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });
         }
     }
 }
