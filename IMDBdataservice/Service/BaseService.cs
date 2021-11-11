@@ -11,14 +11,37 @@ namespace IMDBdataservice.Service
     {
         private static readonly imdbContext ctx = new();
 
-        public List<Title> GetTitle(string search)
+
+        /*
+         * 
+         * 
+         * 
+         *  TITLES
+         * 
+         * 
+         */
+        public List<Title> SearchTitles(string search)
         {
             List<Title> orderList = new();
             orderList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(search.ToLower())).ToList();
                 return orderList;
         }
 
-        public bool BookmarkMovie(string titleId, string userId)
+        public async Task<List<Title>> SeeRatingOfTitle(string id)
+        {
+            List<Title> returns = new();
+            await ctx.Titles.Include(x => x.titlerating).Where(x => x.TitleId == id).ForEachAsync(x =>
+            {
+                returns.Add(new Title
+                {
+                    PrimaryTitle = x.PrimaryTitle,
+                    titlerating = x.titlerating
+                });
+            });
+
+            return returns;
+        }
+        public bool BookmarkTitle(string titleId, string userId)
         {
             BookmarkTitle bt = new()
             {
@@ -30,29 +53,12 @@ namespace IMDBdataservice.Service
             return ctx.SaveChanges() > 0;
         }
 
-        public void CommentMovie(string titleId, string comment) //good to have but not prio.
+        public void CommentTitle(string titleId, string comment) //good to have but not prio.
         {
             
         }
-
-        public List<SearchHistory> GetSearchHistory()
+        public bool RateTitle(string userId, string titleId, string rating)
         {
-            List<SearchHistory> result = new();
-            result = ctx.SearchHistories.ToList();
-            return result;
-        }
-
-        public bool BookmarkPerson(string personId, string userId) {
-            BookmarkPerson bt = new()
-            {
-                PersonId = personId,
-                UserId = userId
-            };
-
-            ctx.Add(bt);
-            return ctx.SaveChanges() > 0;
-        }
-        public bool RateMovie(string userId, string titleId, string rating) {
             UserTitleRating rt = new()
             {
                 TitleId = titleId,
@@ -64,33 +70,69 @@ namespace IMDBdataservice.Service
             return ctx.SaveChanges() > 0;
 
         }
-        public void RatePerson() {}
+        public async Task<List<Title>> SearchTitleByGenre(string genre)
+        {
+            List<Title> result = new();
+            result = ctx.Titles.Include(x => x.genre).Where(x => x.genre.ToString() == genre).ToList();
+            return result;
+        }
+        public async Task<List<Title>> GetTopTitles(int top)
+        { //works but too many top movies with rating 10
+            List<Title> result = new();
+            result = ctx.Titles.Include(x => x.titlerating).OrderByDescending(x => x.titlerating).Take(top).ToList();
+            return result;
+        }
 
-        public async Task<List<Title>> SearchByGenre(string genre) {
-            List<Title> result = new();
-            result = ctx.Titles.Include(x => x.genre).Where(x => x.genre.GenreName == genre).ToList();
+        /*
+         * 
+         * 
+         * 
+         *  User
+         * 
+         * 
+         */
+        public List<SearchHistory> GetSearchHistory()
+        {
+            List<SearchHistory> result = new();
+            result = ctx.SearchHistories.ToList();
             return result;
         }
-        public async Task<List<Title>> GetTop10HighesRatedMovies() { //works but too many top movies with rating 10
-            List<Title> result = new();
-            result = ctx.Titles.Include(x => x.titlerating).OrderByDescending(x => x.titlerating.RatingAvg).Take(10).ToList();
-            return result;
+
+        /*
+         * 
+         * 
+         * 
+         *  Person
+         * 
+         * 
+         */
+        public bool BookmarkPerson(string personId, string userId) {
+            BookmarkPerson bt = new()
+            {
+                PersonId = personId,
+                UserId = userId
+            };
+
+            ctx.Add(bt);
+            return ctx.SaveChanges() > 0;
         }
+
+        public void RatePerson() {}
 
         public async Task<List<Person>> GetMostFrequentPerson(string id) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
             List<Person> result = new();
-            List<Title> titles_list = ctx.Titles.Include(x=>x.knownForTitles).Where(x => x.knownForTitles.PersonId == id).ToList();
+            List<Title> titles_list = ctx.Titles.Include(x=>x.knownForTitles).Where(x => x.knownForTitles == id).ToList();
             
             titles_list.ForEach(x => {
                 List<Person> tt = new();
-                tt = ctx.People.Include(p => p.knownForTitles).Where(p => p.knownForTitles.TitleId == x.TitleId).ToList();
+                tt = ctx.People.Include(p => p.knownForTitles).Where(p => p.knownForTitles == x.TitleId).ToList();
                 tt.ForEach(x => result.Add(x));
             });
 
             return result;
         }
 
-        public List<Person> GetPerson(string search)
+        public List<Person> SearchPersons(string search)
         {
             List<Person> orderList = new();
             orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
@@ -98,22 +140,17 @@ namespace IMDBdataservice.Service
         }
 
 
-        public async Task<List<Title>> SeeRatingOfMovie(string id)
+        Title IbaseService.GetTitle(string titleId)
         {
-            List<Title> returns = new();
-            await ctx.Titles.Include(x => x.titlerating).Where(x => x.TitleId == id).ForEachAsync(x => 
-            {
-                returns.Add(new Title
-                {
-                    PrimaryTitle = x.PrimaryTitle,
-                    titlerating = x.titlerating
-                });
-            });
-
-            return returns;
+            throw new NotImplementedException();
         }
 
+        Person IbaseService.GetPerson(string personId)
+        {
+            throw new NotImplementedException();
+        }
 
+        
         #region functions todo
 
         /*
