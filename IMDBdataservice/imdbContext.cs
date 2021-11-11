@@ -20,6 +20,7 @@ namespace IMDBdataservice
         public virtual DbSet<BookmarkPerson> BookmarkPeople { get; set; }
         public virtual DbSet<BookmarkTitle> BookmarkTitles { get; set; }
         public virtual DbSet<CharacterName> CharacterNames { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Director> Directors { get; set; }
         public virtual DbSet<Episode> Episodes { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
@@ -104,6 +105,30 @@ namespace IMDBdataservice
                     .HasColumnName("character_name");
             });
 
+            modelBuilder.Entity<Comment>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.Date })
+                    .HasName("comment_pkey");
+
+                entity.ToTable("comment");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(255)
+                    .HasColumnName("user_id");
+
+                entity.Property(e => e.Date)
+                    .HasMaxLength(255)
+                    .HasColumnName("date");
+
+                entity.Property(e => e.Comment1)
+                    .HasMaxLength(1024)
+                    .HasColumnName("comment");
+
+                entity.Property(e => e.TitleId)
+                    .HasMaxLength(255)
+                    .HasColumnName("title_id");
+            });
+
             modelBuilder.Entity<Director>(entity =>
             {
                 entity.HasKey(e => new { e.DirectorId, e.TitleId })
@@ -158,6 +183,12 @@ namespace IMDBdataservice
                 entity.Property(e => e.GenreName)
                     .HasMaxLength(255)
                     .HasColumnName("genre_name");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.Genres)
+                    .HasForeignKey(d => d.TitleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("genre_fk");
             });
 
             modelBuilder.Entity<KnownForTitle>(entity =>
@@ -174,6 +205,18 @@ namespace IMDBdataservice
                 entity.Property(e => e.TitleId)
                     .HasMaxLength(255)
                     .HasColumnName("title_id");
+
+                entity.HasOne(d => d.Person)
+                    .WithMany(p => p.KnownForTitles)
+                    .HasForeignKey(d => d.PersonId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("person_fk");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.KnownForTitles)
+                    .HasForeignKey(d => d.TitleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("title_fk");
             });
 
             modelBuilder.Entity<Omdb>(entity =>
@@ -199,8 +242,6 @@ namespace IMDBdataservice
             modelBuilder.Entity<Person>(entity =>
             {
                 entity.ToTable("person");
-
-                entity.HasIndex(e => e.PersonName, "h");
 
                 entity.Property(e => e.PersonId)
                     .HasMaxLength(255)
@@ -237,6 +278,8 @@ namespace IMDBdataservice
                     .HasColumnName("person_name");
 
                 entity.Property(e => e.Rating).HasColumnName("rating");
+
+                entity.Property(e => e.Weight).HasColumnName("weight");
             });
 
             modelBuilder.Entity<Principal>(entity =>
@@ -352,6 +395,12 @@ namespace IMDBdataservice
                 entity.Property(e => e.Votes)
                     .HasMaxLength(255)
                     .HasColumnName("votes");
+
+                entity.HasOne(d => d.Title)
+                    .WithOne(p => p.TitleRating)
+                    .HasForeignKey<TitleRating>(d => d.TitleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("title_fk");
             });
 
             modelBuilder.Entity<TitleVersion>(entity =>
