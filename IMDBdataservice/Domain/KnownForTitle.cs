@@ -9,5 +9,8 @@ namespace IMDBdataservice
     {
         public string PersonId { get; set; }
         public string TitleId { get; set; }
+
+        public virtual Person Person { get; set; }
+        public virtual Title Title { get; set; }
     }
 }

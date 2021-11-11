@@ -9,6 +9,7 @@ namespace IMDBdataservice
     {
         public string PersonId { get; set; }
         public string PersonName { get; set; }
+        public double? Weight { get; set; }
         public long? Rating { get; set; }
         public long? NumVotes { get; set; }
     }
