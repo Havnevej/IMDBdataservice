@@ -35,11 +35,6 @@ namespace WebAPI.Controllers
             return Ok(title);
         }
 
-        public string GetUrl(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
         private string GetUrl(Title title)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { title.TitleId });
