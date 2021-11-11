@@ -27,6 +27,13 @@ namespace IMDBdataservice.Service
                 return orderList;
         }
 
+        public Title GetTitles(string id)
+        {
+            Title title = new();
+            title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
+            return title;
+        }
+
         public async Task<List<Title>> SeeRatingOfTitle(string id)
         {
             List<Title> returns = new();
@@ -137,6 +144,13 @@ namespace IMDBdataservice.Service
             List<Person> orderList = new();
             orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
             return orderList;
+        }
+
+        public Person GetPerson(string id)//
+        {
+            Person person = new();
+            person = ctx.People.FirstOrDefault(x=>x.PersonId==id);
+            return person;
         }
 
 
