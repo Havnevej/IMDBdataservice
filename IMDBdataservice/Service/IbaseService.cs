@@ -10,7 +10,7 @@ namespace IMDBdataservice.Service
         public imdbContext GetImdbContext();
         public Title GetTitle(string titleId);
         public List<Title> SearchTitles(Title title, QueryString queryString);
-        public List<Person> SearchPersons(string search);
+        public List<Person> SearchPersons(Person person, QueryString queryString);
         public Person GetPerson(string personId);
         public bool BookmarkTitle(BookmarkTitle bt);
         public object CommentTitle(Comment comment);

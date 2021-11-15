@@ -153,10 +153,11 @@ namespace IMDBdataservice.Service
             return result;
         }
 
-        public List<Person> SearchPersons(string search)
+        public List<Person> SearchPersons(Person person, QueryString queryString)
         {
             List<Person> orderList = new();
-            orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
+            orderList = ctx.People.Where(x => x.PersonName.Contains(person.PersonName)).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToList();
             return orderList;
         }
         public Person GetPerson(string id)

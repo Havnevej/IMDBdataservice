@@ -114,6 +114,31 @@ namespace WebAPI.Controllers
         }
 
 
+        [HttpGet]
+        [Route("search/person")]
+        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryString queryString)
+        {
+            var result = _dataService.SearchPersons(person, queryString);
+            if (result.Count == 0)
+            {
+                return Ok("{\"message\":\"No results found\"}");
+            }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("person/{id}")] //Route is weird, make person controller?
+        public IActionResult GetPerson(string id)
+        {
+            var title = _dataService.GetPerson(id);
+
+            if (title == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(title);
+        }
         string IOurcontroller<Title>.GetUrl(Title obj)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });
