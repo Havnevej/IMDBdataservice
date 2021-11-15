@@ -36,10 +36,9 @@ namespace WebAPI.Controllers
             return Ok(title);
         }        
         [HttpGet]
-        public IActionResult GetTitles(int amount, int page) //not implemented ?depth=100&?page=2 example
-        {
-            var titles_to_get = 20; //temp, needs to be in parameter
-            var title = _dataService.GetTopTitles(titles_to_get);
+        public IActionResult GetTitles([FromQuery] QueryString queryString) //not implemented ?depth=100&?page=2 example
+        { //temp, needs to be in parameter
+            var title = _dataService.GetTopTitles(queryString);
 
             if (title == null)
             {
@@ -52,6 +51,14 @@ namespace WebAPI.Controllers
         string IOurcontroller<Title>.GetUrl(Title obj)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });
+        }
+
+        private string GetTopTitlesUrl(int page, int pageSize, string orderBy)
+        {
+            return _linkGenerator.GetUriByName(
+                HttpContext,
+                nameof(GetTitles),
+                new { page, pageSize, orderBy });
         }
     }
 }
