@@ -78,7 +78,8 @@ namespace IMDBdataservice.Service
         {
             List<Title> result = new();
 #warning This has changed, genres is a list, make new logic
-            result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToListAsync().Result;
+            result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToListAsync().Result;
             return result;
         }
 
