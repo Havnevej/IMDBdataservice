@@ -52,7 +52,6 @@ namespace WebAPI.Controllers
         public IActionResult SearchTitleByGenre([FromQuery] QueryString queryString)
         {
             var genre = _dataService.SearchTitleByGenre(queryString);
-            Console.WriteLine(queryString.Genre);
             if (genre == null)
             {
                 return NotFound();
