@@ -68,6 +68,12 @@ namespace WebAPI.Controllers
             return Ok(genre.Result);
         }
 
+        [HttpGet]
+        [Route("search/primary")] // Kinda works but not really, works with https://localhost:5001/api/titles/search/primary?Page=5&PrimaryTitle=James but not James Bond
+        public IActionResult SearchTitles([FromQuery] QueryString queryString) {
+            var primaryTitle = _dataService.SearchTitles(queryString);
+            return Ok(primaryTitle);
+        }
 
         [HttpPost] // TODO: Add More error handling
         public IActionResult BookmarkTitle([FromBody] BookmarkTitle bt) 

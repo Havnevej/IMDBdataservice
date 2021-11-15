@@ -21,10 +21,11 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public List<Title> SearchTitles(string search)
+        public List<Title> SearchTitles(QueryString queryString) // Kinda works but not really, works with https://localhost:5001/api/titles/search/primary?Page=5&PrimaryTitle=James but not James Bond
         {
             List<Title> orderList = new();
-            orderList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(search.ToLower())).ToList();
+            orderList = ctx.Titles.Where(x => x.PrimaryTitle.Contains(queryString.PrimaryTitle)).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToList();
                 return orderList;
         }
         public Title GetTitle(string id)
