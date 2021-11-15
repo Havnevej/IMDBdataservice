@@ -38,14 +38,28 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryString queryString) //not implemented ?depth=100&?page=2 example
         { //temp, needs to be in parameter
+            Console.WriteLine(queryString.Genre);
+
             var title = _dataService.GetTopTitles(queryString);
+
+            // Get total number of records
+            int total = title.Result.Count;
+
+            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
+
 
             if (title == null)
             {
                 return NotFound();
             }
 
-            return Ok(title.Result);
+            return Ok(new {Data = title.Result, 
+                Paging = new {
+                    First = linkBuilder.FirstPage,
+                    Previous = linkBuilder.PreviousPage,
+                    Next = linkBuilder.NextPage,
+                    Last = linkBuilder.LastPage
+            } });
         }
         
         string IOurcontroller<Title>.GetUrl(Title obj)
