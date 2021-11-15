@@ -126,15 +126,14 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public bool BookmarkPerson(string personId, string userId) {
-            BookmarkPerson bt = new()
+        public bool BookmarkPerson(BookmarkPerson bp)
+        {
+            if (!ctx.BookmarkPeople.ToList().Any(x => x.UserId == bp.UserId && x.PersonId == bp.PersonId))
             {
-                PersonId = personId,
-                UserId = userId
-            };
-
-            ctx.Add(bt);
-            return ctx.SaveChanges() > 0;
+                ctx.Add(bp);
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
         public void RatePerson() {}
@@ -153,14 +152,14 @@ namespace IMDBdataservice.Service
             return result;
         }
 
-        public List<Person> SearchPersons(Person person, QueryString queryString)
+        public List<Person> SearchPersons(Person person, QueryString queryString) // Done in controller
         {
             List<Person> orderList = new();
             orderList = ctx.People.Where(x => x.PersonName.Contains(person.PersonName)).Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToList();
             return orderList;
         }
-        public Person GetPerson(string id)
+        public Person GetPerson(string id) //Done in controller
         {
             var person = ctx.People.FirstOrDefault(x => x.PersonId == id);
             return person;

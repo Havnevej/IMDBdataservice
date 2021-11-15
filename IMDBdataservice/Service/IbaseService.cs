@@ -16,7 +16,7 @@ namespace IMDBdataservice.Service
         public object CommentTitle(Comment comment);
         public List<Comment> GetCommentsByTitleId(string titleId, QueryString queryString);
         public List<SearchHistory> GetSearchHistory();
-        public bool BookmarkPerson(string personId, string userId);
+        public bool BookmarkPerson(BookmarkPerson bp);
         public bool RateTitle(string userId, string titleId, string rating);
         public void RatePerson();
         public Task<List<Title>> SearchTitleByGenre(QueryString queryString);

@@ -80,9 +80,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost] // TODO: Add More error handling
+        [Route("bookmark/title")]
         public IActionResult BookmarkTitle([FromBody] BookmarkTitle bt) 
         {
-            Console.WriteLine(bt.TitleId);
             if (_dataService.BookmarkTitle(bt))
             {
                return Ok("inserted");
@@ -92,7 +92,22 @@ namespace WebAPI.Controllers
                 return BadRequest("Already exists");
             }
         }
-         
+
+
+        [HttpPost] // TODO: Add More error handling
+        [Route("bookmark/person")]
+        public IActionResult BookmarkPerson([FromBody] BookmarkPerson bp)
+        {
+            if (_dataService.BookmarkPerson(bp))
+            {
+                return Ok("inserted");
+            }
+            else
+            {
+                return BadRequest("Already exists");
+            }
+        }
+
         [HttpPost] // TODO: Add More error handling
         [Route("comments")] 
         public IActionResult CommentTitle([FromBody] Comment comment)
@@ -115,7 +130,7 @@ namespace WebAPI.Controllers
 
 
         [HttpGet]
-        [Route("search/person")]
+        [Route("search/person")] //Weird route aagain
         public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryString queryString)
         {
             var result = _dataService.SearchPersons(person, queryString);
