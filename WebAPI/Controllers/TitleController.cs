@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using IMDBdataservice.Service;
 using IMDBdataservice;
 using Microsoft.AspNetCore.Routing;
+using WebAPI.Helpers;
 
 namespace WebAPI.Controllers
 {
@@ -47,19 +46,13 @@ namespace WebAPI.Controllers
 
             var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
 
-
             if (title == null)
             {
                 return NotFound();
             }
 
-            return Ok(new {Data = title.Result, 
-                Paging = new {
-                    First = linkBuilder.FirstPage,
-                    Previous = linkBuilder.PreviousPage,
-                    Next = linkBuilder.NextPage,
-                    Last = linkBuilder.LastPage
-            } });
+            DataWithPaging re = new(title.Result, linkBuilder);
+            return Ok(re);
         }
         
         string IOurcontroller<Title>.GetUrl(Title obj)

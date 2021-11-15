@@ -6,12 +6,7 @@ namespace WebAPI.Controllers
 {
     internal class PageLinkBuilder
     {
-        private IUrlHelper url;
-        private string route;
-        private object routeValues;
-        private object page;
-        private object pagesize;
-        private object total;
+
 
         public Uri FirstPage { get; private set; }
         public Uri LastPage { get; private set; }
@@ -26,12 +21,6 @@ namespace WebAPI.Controllers
                 ? (int)Math.Ceiling(total / (double)pageSize)
                 : 0;
 
-            this.url = url;
-            this.route = route;
-            this.routeValues = extraValues;
-            this.page = pageNum;
-            this.pagesize = pageSize;
-            this.total = total;
             // Create them page links 
             FirstPage = new Uri(url.Link(route, new HttpRouteValueDictionary(extraValues)
             {
