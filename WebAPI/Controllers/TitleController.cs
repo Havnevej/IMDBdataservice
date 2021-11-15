@@ -71,8 +71,12 @@ namespace WebAPI.Controllers
         [HttpGet]
         [Route("search/primary")] // Kinda works but not really, works with https://localhost:5001/api/titles/search/primary?Page=5&PrimaryTitle=James but not James Bond
         public IActionResult SearchTitles([FromQuery] QueryString queryString) {
-            var primaryTitle = _dataService.SearchTitles(queryString);
-            return Ok(primaryTitle);
+            var result = _dataService.SearchTitles(queryString);
+            if (result.Count == 0)
+            {
+                return Ok("{\"message\":\"No results found\"}");
+            }
+            return Ok(result);
         }
 
         [HttpPost] // TODO: Add More error handling
