@@ -18,7 +18,7 @@ namespace IMDBdataservice.Service
         public bool BookmarkPerson(string personId, string userId);
         public bool RateTitle(string userId, string titleId, string rating);
         public void RatePerson();
-        public Task<List<Title>> SearchTitleByGenre(string genre);
+        public Task<List<Title>> SearchTitleByGenre(QueryString queryString);
         public Task<List<Title>> GetTopTitles(QueryString queryString);
         public Task<List<Person>> GetMostFrequentPerson(string id);
         public Task<List<Title>> SeeRatingOfTitle(string id);

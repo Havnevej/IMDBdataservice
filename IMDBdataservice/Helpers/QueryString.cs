@@ -14,7 +14,6 @@ namespace IMDBdataservice
         public const int MaxPageSize = 500;
 
         public int Page { get; set; } = 0;
-
         public int PageSize
         {
             get => _pageSize;

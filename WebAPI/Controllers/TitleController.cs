@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
             }
 
             return Ok(title);
-        }        
+        }
         [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryString queryString) //not implemented ?depth=100&?page=2 example
         { //temp, needs to be in parameter
@@ -54,7 +54,22 @@ namespace WebAPI.Controllers
             DataWithPaging re = new(title.Result, linkBuilder);
             return Ok(re);
         }
-        
+
+        [HttpGet]
+        [Route("search")]
+        public IActionResult SearchTitleByGenre([FromQuery] QueryString queryString)
+        {
+            var genre = _dataService.SearchTitleByGenre(queryString);
+            if (genre == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(genre.Result);
+        }
+
+
+
         string IOurcontroller<Title>.GetUrl(Title obj)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });

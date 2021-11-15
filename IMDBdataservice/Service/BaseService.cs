@@ -75,11 +75,12 @@ namespace IMDBdataservice.Service
             return ctx.SaveChanges() > 0;
 
         }
-        public async Task<List<Title>> SearchTitleByGenre(string genre)
+        public async Task<List<Title>> SearchTitleByGenre(QueryString queryString)
         {
             List<Title> result = new();
 #warning This has changed, genres is a list, make new logic
-            result = ctx.Titles.Include(x => x.Genres.First()).Where(x => x.Genres.First().ToString() == genre).ToList();
+            result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToListAsync().Result;
             return result;
         }
 
