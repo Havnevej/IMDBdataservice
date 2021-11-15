@@ -69,9 +69,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("search/primary")] // Kinda works but not really, works with https://localhost:5001/api/titles/search/primary?Page=5&PrimaryTitle=James but not James Bond
-        public IActionResult SearchTitles([FromQuery] QueryString queryString) {
-            var result = _dataService.SearchTitles(queryString);
+        [Route("search/primary")]
+        public IActionResult SearchTitles([FromBody] Title title,[FromQuery] QueryString queryString) {
+            var result = _dataService.SearchTitles(title, queryString);
             if (result.Count == 0)
             {
                 return Ok("{\"message\":\"No results found\"}");
