@@ -69,6 +69,40 @@ namespace WebAPI.Controllers
         }
 
 
+        [HttpPost] // TODO: Add More error handling
+        public IActionResult BookmarkTitle([FromBody] BookmarkTitle bt) 
+        {
+            Console.WriteLine(bt.TitleId);
+            if (_dataService.BookmarkTitle(bt))
+            {
+               return Ok("inserted");
+            }
+            else
+            {
+                return BadRequest("Already exists");
+            }
+        }
+         
+        [HttpPost] // TODO: Add More error handling
+        [Route("comments")] 
+        public IActionResult CommentTitle([FromBody] Comment comment)
+        {
+            _dataService.CommentTitle(comment);
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("comments/{id}")] 
+        public IActionResult GetCommentsByTitleId(string id, [FromQuery] QueryString queryString)
+        {
+            var result = _dataService.GetCommentsByTitleId(id, queryString);
+            if (result.Count == 0)
+            {
+                return Ok("{\"message\":\"No comments\"}");
+            }
+            return Ok(result);
+        }
+
 
         string IOurcontroller<Title>.GetUrl(Title obj)
         {

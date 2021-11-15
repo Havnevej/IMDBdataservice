@@ -46,22 +46,32 @@ namespace IMDBdataservice.Service
 
             return returns;
         }
-        public bool BookmarkTitle(string titleId, string userId)
+        public bool BookmarkTitle(BookmarkTitle bt)
         {
-            BookmarkTitle bt = new()
+            if (!ctx.BookmarkTitles.ToList().Any(x => x.UserId == bt.UserId && x.TitleId == bt.TitleId))
             {
-                TitleId = titleId,
-                UserId = userId
-            };
-
-            ctx.Add(bt);
-            return ctx.SaveChanges() > 0;
+                 ctx.Add(bt);
+                 return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
-        public void CommentTitle(string titleId, string comment) //good to have but not prio.
+        public object CommentTitle(Comment comment) //good to have but not prio.
         {
-            
+
+            ctx.Add(comment);
+
+            ctx.SaveChanges();
+            return new{Error="false",ErrorMessage=""};
         }
+
+        public List<Comment> GetCommentsByTitleId(string TitleId, QueryString queryString)
+        {
+            List<Comment> Result = ctx.Comments.Where(x => x.TitleId == TitleId).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToList();
+            return Result;
+        }
+
         public bool RateTitle(string userId, string titleId, string rating)
         {
             UserTitleRating rt = new()
