@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IMDBdataservice.Service
@@ -17,7 +18,7 @@ namespace IMDBdataservice.Service
         public bool RateTitle(string userId, string titleId, string rating);
         public void RatePerson();
         public Task<List<Title>> SearchTitleByGenre(string genre);
-        public Task<List<Title>> GetTopTitles(int top);
+        public Task<List<Title>> GetTopTitles(QueryString queryString);
         public Task<List<Person>> GetMostFrequentPerson(string id);
         public Task<List<Title>> SeeRatingOfTitle(string id);
 

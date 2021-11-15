@@ -81,10 +81,12 @@ namespace IMDBdataservice.Service
             result = ctx.Titles.Include(x => x.Genres.First()).Where(x => x.Genres.First().ToString() == genre).ToList();
             return result;
         }
-        public async Task<List<Title>> GetTopTitles(int top)
+
+        public async Task<List<Title>> GetTopTitles(QueryString queryString)
         { //works but too many top movies with rating 10*
             List<Title> result = new();
-            result = ctx.Titles.Include(x => x.TitleRating).OrderByDescending(x => x.TitleRating).Take(top).ToListAsync().Result;
+            result = ctx.Titles.Include(x => x.TitleRating).OrderByDescending(x => x.TitleRating).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToListAsync().Result; 
             return result;
         }
 
