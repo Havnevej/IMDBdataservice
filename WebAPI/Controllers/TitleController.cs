@@ -34,12 +34,11 @@ namespace WebAPI.Controllers
             }
 
             return Ok(title);
-        }        
+        }
         [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryString queryString) //not implemented ?depth=100&?page=2 example
         { //temp, needs to be in parameter
             var title = _dataService.GetTopTitles(queryString);
-
             if (title == null)
             {
                 return NotFound();
@@ -47,7 +46,23 @@ namespace WebAPI.Controllers
 
             return Ok(title.Result);
         }
-        
+
+        [HttpGet]
+        [Route("search")]
+        public IActionResult SearchTitleByGenre([FromQuery] QueryString queryString)
+        {
+            var genre = _dataService.SearchTitleByGenre(queryString);
+            Console.WriteLine(queryString.Genre);
+            if (genre == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(genre.Result);
+        }
+
+
+
         string IOurcontroller<Title>.GetUrl(Title obj)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });

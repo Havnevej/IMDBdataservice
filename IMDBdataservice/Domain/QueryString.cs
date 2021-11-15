@@ -9,11 +9,10 @@ namespace IMDBdataservice
     public class QueryString
     {
         private int _pageSize = 10;
-
+        public string Genre { get; set; }
         public const int MaxPageSize = 25;
 
         public int Page { get; set; } = 0;
-
         public int PageSize
         {
             get => _pageSize;
