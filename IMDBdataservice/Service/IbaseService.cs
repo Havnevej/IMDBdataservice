@@ -7,6 +7,7 @@ namespace IMDBdataservice.Service
     public interface IbaseService
     {
         //Functions go here
+        public imdbContext GetImdbContext();
         public Title GetTitle(string titleId);
         public List<Title> SearchTitles(string search);
         public List<Person> SearchPersons(string search);

@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
             var title = _dataService.GetTopTitles(queryString);
 
             // Get total number of records
-            int total = title.Result.Count;
+            long total = _dataService.GetImdbContext().Titles.Count();
 
             var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
 

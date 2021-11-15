@@ -9,7 +9,8 @@ namespace IMDBdataservice.Service
 {
     public class BaseService : IbaseService
     {
-        private static readonly imdbContext ctx = new();
+        public static readonly imdbContext ctx = new();
+        public imdbContext GetImdbContext (){ return ctx; }
 
 
         /*
