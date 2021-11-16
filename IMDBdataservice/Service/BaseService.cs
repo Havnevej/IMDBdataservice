@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-
+using AutoMapper;
 namespace IMDBdataservice.Service
 {
     public class BaseService : IbaseService
@@ -31,25 +31,18 @@ namespace IMDBdataservice.Service
         public Title GetTitle(string id)
         {
             var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
-            return title;
+            return  title;
         }
-        public async Task<List<Title>> GetRatingForTitle(string id)
+        public float GetRatingForTitle(string id)
         {
-            List<Title> returns = new();
-            await ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).ForEachAsync(x =>
-            {
-                returns.Add(new Title
-                {
-                    PrimaryTitle = x.PrimaryTitle,
-                    TitleRating = x.TitleRating
-                });
-            });
+            var avg_rating = ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).FirstOrDefault().TitleRating.RatingAvg;
+            return (float)avg_rating;
 
-            return returns;
+
         }
         public bool BookmarkTitle(BookmarkTitle bt)
         {
-            if (!ctx.BookmarkTitles.ToList().Any(x => x.UserId == bt.UserId && x.TitleId == bt.TitleId))
+            if (!ctx.BookmarkTitles.ToList().Any(x => x.Username == bt.Username && x.TitleId == bt.TitleId))
             {
                  ctx.Add(bt);
                  return ctx.SaveChanges() > 0;
@@ -77,7 +70,7 @@ namespace IMDBdataservice.Service
             UserTitleRating rt = new()
             {
                 TitleId = titleId,
-                UserId = userId,
+                Username = userId,
                 Rating = rating
             };
 
@@ -88,7 +81,7 @@ namespace IMDBdataservice.Service
         public async Task<List<Title>> SearchTitleByGenre(QueryString queryString)
         {
             List<Title> result = new();
-#warning This has changed, genres is a list, make new logic
+
             result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToListAsync().Result;
             return result;
@@ -127,7 +120,7 @@ namespace IMDBdataservice.Service
          */
         public bool BookmarkPerson(BookmarkPerson bp)
         {
-            if (!ctx.BookmarkPeople.ToList().Any(x => x.UserId == bp.UserId && x.PersonId == bp.PersonId))
+            if (!ctx.BookmarkPeople.ToList().Any(x => x.Username == bp.Username && x.PersonId == bp.PersonId))
             {
                 ctx.Add(bp);
                 return ctx.SaveChanges() > 0;
@@ -135,20 +128,32 @@ namespace IMDBdataservice.Service
             return false;
         }
 
-        public void RatePerson() {}
 
-        public async Task<List<Person>> GetMostFrequentPerson(string id) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
-            List<Person> result = new(); // Changed function
-#warning Changed function with new context, check if works
-            List<Title> titles_list = ctx.Titles.Include(x=>x.KnownForTitles).Where(x => x.KnownForTitles.FirstOrDefault().ToString().Contains(id)).ToList();
-            
-            titles_list.ForEach(x => {
+
+        public List<Person> GetMostFrequentPerson(QueryString queryString) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
+            List<Person> result = new();
+            //Find all co-workers:
+            //result = ctx.People.Include(x => x.KnownForTitles).Where(x => x.KnownForTitles.Any(x=>x.PersonId == queryString.personId)).ToList();
+
+            //Find all titles with our rockstar in it:
+            List<Title> result_t = new();
+            result_t = ctx.Titles.Include(x => x.KnownForTitles).Where(x => x.KnownForTitles.Any(x => x.PersonId == queryString.personId)).ToList();
+
+            //Find the most frequent co-star:
+            result_t.ForEach(x => {
                 List<Person> tt = new();
-                tt = ctx.People.Include(p => p).Where(p => p.PersonId == x.TitleId).ToList();
+                tt = ctx.People.Include(p => p.KnownForTitles).Where(p => p.KnownForTitles.Any(f => f.TitleId == x.TitleId)).ToList();
                 tt.ForEach(x => result.Add(x));
             });
-
-            return result;
+            //find co-stars that have been in more than one movie with our rock star:
+            var toremove = result.FirstOrDefault(x => x.PersonId == queryString.personId);
+            result.Remove(toremove);
+            
+            var ss = result.GroupBy(x => x)
+              .OrderByDescending(g => g.Count()).Take(5)
+              .Select(y => y.Key)
+              .ToList();
+            return ss;
         }
 
         public List<Person> SearchPersons(Person person, QueryString queryString) // Done in controller
@@ -164,7 +169,7 @@ namespace IMDBdataservice.Service
             return person;
         }
         // Not implemented functions
-        public bool AddTitle(Title title)
+        public bool AddTitle(Title title) // still needs auto increment
         {
             if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId)) {
             
@@ -173,10 +178,23 @@ namespace IMDBdataservice.Service
             }
             return false;
         }
-
-        public bool UpdateTitle(Title originalTitle, Title updateTitle)
+        public bool UpdateTitle(TitleDTO title)
         {
-            throw new NotImplementedException();
+            var dbTitle = GetTitle(title.TitleId);
+            if (dbTitle == null)
+            {
+                Console.WriteLine("hey");
+                return false;
+            }
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<TitleDTO, Title>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            });
+            
+            var mapper = new Mapper(config);
+            dbTitle = mapper.Map<TitleDTO, Title>(title,dbTitle);
+
+            return ctx.SaveChanges() > 0;
         }
 
         public bool AddPerson(Person person)
@@ -190,9 +208,23 @@ namespace IMDBdataservice.Service
         
         }
 
-        public bool UpdatePerson(Person originalPerson, Person updatePerson)
+        public bool UpdatePerson(PersonDTO person)
         {
-            throw new NotImplementedException();
+            var dbPerson = GetPerson(person.PersonId);
+            if (dbPerson == null)
+            {
+  
+                return false;
+            }
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<PersonDTO, Person>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            });
+
+            var mapper = new Mapper(config);
+            dbPerson = mapper.Map<PersonDTO, Person>(person, dbPerson);
+
+            return ctx.SaveChanges() > 0;
         }
 
         public bool RemoveTitle(Title titleToBeRemoved)
@@ -218,6 +250,32 @@ namespace IMDBdataservice.Service
                 return ctx.SaveChanges() > 0;
             }
             return false;
+        }
+
+
+        public User GetUser(string username)
+        {
+            User person = ctx.Users.FirstOrDefault(x => x.Username == username);
+            return person;
+        }
+
+        public void CreateUser(string username, string password = null, string salt = null)
+        {
+            User user = new()
+            {
+                UserId = ctx.Users.Max(x=>x.UserId)+1,
+                Username = username,
+                Password = password,
+                Salt = salt
+            };
+            ctx.Add(user);
+            ctx.SaveChanges();
+        }
+        public void DeleteUser(string username)
+        {
+            var user = ctx.Users.FirstOrDefault(x => x.Username == username);
+            ctx.Users.Remove(user);
+            ctx.SaveChanges();
         }
 
 

@@ -11,27 +11,30 @@ namespace IMDBdataservice.Service
         public Title GetTitle(string titleId);
         public bool AddTitle(Title title);
         public bool RemoveTitle(Title titleToBeRemoved);
-        public bool UpdateTitle(Title originalTitle, Title updateTitle);
+        public bool UpdateTitle(TitleDTO title);
         public List<Title> SearchTitles(Title title, QueryString queryString);
         public bool BookmarkTitle(BookmarkTitle bt);
         public object CommentTitle(Comment comment);
         public bool RateTitle(string userId, string titleId, string rating);
         public Task<List<Title>> SearchTitleByGenre(QueryString queryString);
         public Task<List<Title>> GetTopTitles(QueryString queryString);
-        public Task<List<Title>> GetRatingForTitle(string id);
+        public float GetRatingForTitle(string id);
         public List<Comment> GetCommentsByTitleId(string titleId, QueryString queryString);
         //              PERSON
         public Person GetPerson(string personId);
         public bool AddPerson(Person title);
         public bool RemovePerson(Person personToBeRemoved);
-        public bool UpdatePerson(Person originalPerson, Person updatePerson);
+        public bool UpdatePerson(PersonDTO person);
         public List<Person> SearchPersons(Person person, QueryString queryString);
-        public Task<List<Person>> GetMostFrequentPerson(string id);
-        public void RatePerson();
+        public List<Person> GetMostFrequentPerson(QueryString queryString);
         public bool BookmarkPerson(BookmarkPerson bp);
         //              MISC
         public List<SearchHistory> GetSearchHistory();
         public imdbContext GetImdbContext();
+        //              USER
+        public User GetUser(string username);
+        public void CreateUser(string username, string password = null, string salt = null);
+        public void DeleteUser(string username);
 
 
         /*

@@ -5,7 +5,10 @@ using System.Linq;
 using IMDBdataservice.Service;
 using IMDBdataservice;
 using Microsoft.AspNetCore.Routing;
+using WebServiceToken.Attributes;
 using WebAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using WebServiceToken.Models;
 
 namespace WebAPI.Controllers
 {
@@ -41,17 +44,15 @@ namespace WebAPI.Controllers
 
             var title = _dataService.GetTopTitles(queryString);
 
-            // Get total number of records
-            long total = _dataService.GetImdbContext().Titles.Count();
-
-            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
-
             if (title == null)
             {
                 return NotFound();
             }
 
+            long total = _dataService.GetImdbContext().Titles.Count();
+            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
             DataWithPaging re = new(title.Result, linkBuilder);
+
             return Ok(re);
         }
 
@@ -64,8 +65,55 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
+            long total = _dataService.GetImdbContext().Genres.Count();
+            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
+            DataWithPaging re = new(genre.Result, linkBuilder);
+            return Ok(re);
+        }
+        [Authorization]
+        [HttpGet]
+        [Route("gethist")]
+        public IActionResult Get__search_history()
+        {
+            try
+            {
 
-            return Ok(genre.Result);
+            
+            var history = _dataService.GetSearchHistory();
+       
+            if (history == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(history);
+            }
+            catch
+            {
+                return Unauthorized();
+            }
+
+        }
+
+        [HttpGet]
+        [Route("freq")]
+        public IActionResult amazing([FromQuery] QueryString queryString)
+        {
+            var result = _dataService.GetMostFrequentPerson(queryString);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result.Select(cc));
+        }
+
+        private Freq cc(Person person)
+        {
+            return new Freq
+            {
+                name = person.PersonName
+            };
         }
 
         [HttpGet]
@@ -77,20 +125,6 @@ namespace WebAPI.Controllers
                 return Ok("{\"message\":\"No results found\"}");
             }
             return Ok(result);
-        }
-
-        [HttpPost]
-        [Route("add")]
-        public IActionResult AddTitle([FromBody] Title t) 
-        {
-            if (_dataService.AddTitle(t))
-            {
-               return Ok("inserted");
-            }
-            else
-            {
-                return BadRequest("Already exists");
-            }
         }
 
         [HttpPost]
@@ -210,6 +244,50 @@ namespace WebAPI.Controllers
             }
 
             return Ok(title);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult UpdateTitle(string id, [FromBody] TitleDTO title)
+        {
+            title.TitleId = id;
+            if (!_dataService.GetImdbContext().Titles.Any(x => x.TitleId == id))
+            {
+                return BadRequest("Id does not exits");
+            }
+            return Ok(_dataService.UpdateTitle(title));
+
+        }
+
+
+        [HttpPut]
+        [Route("person/{id}")]
+        public IActionResult UpdatePerson(string id, [FromBody] PersonDTO person)
+        {
+            person.PersonId = id;
+            if (!_dataService.GetImdbContext().People.Any(x => x.PersonId == id))
+            {
+                return BadRequest("Id does not exits");
+            }
+            return Ok(_dataService.UpdatePerson(person));
+
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public IActionResult AddTitle([FromBody] Title title)
+        {
+            var result = _dataService.AddTitle(title);
+            return Ok(title);
+        }
+
+        [HttpGet]
+        [Route("rating")]
+        public IActionResult GetRatingForTitle([FromBody] TitleDTO TitleRating)
+        {
+            var result = _dataService.GetRatingForTitle(TitleRating.TitleId);
+
+            return Ok(result);
         }
         string IOurcontroller<Title>.GetUrl(Title obj)
         {

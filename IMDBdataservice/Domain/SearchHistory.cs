@@ -7,7 +7,7 @@ namespace IMDBdataservice
 {
     public partial class SearchHistory
     {
-        public string UserId { get; set; }
+        public string Username { get; set; }
         public string SearchString { get; set; }
         public string Date { get; set; }
     }
