@@ -142,35 +142,6 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("add/person")]
-        public IActionResult AddPerson([FromBody] Person p) 
-        {
-            if (_dataService.AddPerson(p))
-            {
-               return Ok("inserted");
-            }
-            else
-            {
-                return BadRequest("Already exists");
-            }
-        }
-
-        [HttpPost]
-        [Route("remove/person")]
-        public IActionResult RemovePerson([FromBody] Person p)
-        {
-            if (_dataService.RemovePerson(p))
-            {
-                return Ok("removed");
-            }
-            else
-            {
-                return BadRequest("Already removed");
-            }
-        }
-
-
         [HttpPost] // TODO: Add More error handling
         [Route("bookmark/title")]
         public IActionResult BookmarkTitle([FromBody] BookmarkTitle bt) 
@@ -178,21 +149,6 @@ namespace WebAPI.Controllers
             if (_dataService.BookmarkTitle(bt))
             {
                return Ok("inserted");
-            }
-            else
-            {
-                return BadRequest("Already exists");
-            }
-        }
-
-
-        [HttpPost] // TODO: Add More error handling
-        [Route("bookmark/person")]
-        public IActionResult BookmarkPerson([FromBody] BookmarkPerson bp)
-        {
-            if (_dataService.BookmarkPerson(bp))
-            {
-                return Ok("inserted");
             }
             else
             {
@@ -218,33 +174,6 @@ namespace WebAPI.Controllers
                 return Ok("{\"message\":\"No comments\"}");
             }
             return Ok(result);
-        }
-
-
-        [HttpGet]
-        [Route("search/person")] //Weird route aagain
-        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryString queryString)
-        {
-            var result = _dataService.SearchPersons(person, queryString);
-            if (result.Count == 0)
-            {
-                return Ok("{\"message\":\"No results found\"}");
-            }
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("person/{id}")] //Route is weird, make person controller?
-        public IActionResult GetPerson(string id)
-        {
-            var title = _dataService.GetPerson(id);
-
-            if (title == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(title);
         }
 
         [HttpPut]
