@@ -79,6 +79,21 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        [Route("add/title")]
+        public IActionResult Title([FromBody] Title t) 
+        {
+            if (_dataService.AddTitle(t))
+            {
+               return Ok("inserted");
+            }
+            else
+            {
+                return BadRequest("Already exists");
+            }
+        }
+        
+    
         [HttpPost] // TODO: Add More error handling
         [Route("bookmark/title")]
         public IActionResult BookmarkTitle([FromBody] BookmarkTitle bt) 

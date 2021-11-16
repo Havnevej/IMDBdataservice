@@ -59,10 +59,9 @@ namespace IMDBdataservice.Service
 
         public object CommentTitle(Comment comment) //good to have but not prio.
         {
-
             ctx.Add(comment);
-
             ctx.SaveChanges();
+            
             return new{Error="false",ErrorMessage=""};
         }
 
@@ -167,7 +166,25 @@ namespace IMDBdataservice.Service
         // Not implemented functions
         public bool AddTitle(Title title)
         {
-            throw new NotImplementedException(); //testing
+            Title t = new()
+            {
+                TitleId = title.TitleId,
+                IsAdult = title.IsAdult,
+                EndYear = title.EndYear,
+                Genres = title.Genres,
+                KnownForTitles = title.KnownForTitles,
+                OriginalTitle = title.OriginalTitle,
+                PrimaryTitle = title.PrimaryTitle,
+                RunTimeMinutes = title.RunTimeMinutes,
+                StartYear = title.StartYear,
+                TitleRating = title.TitleRating,
+                TitleType = title.TitleType,
+
+            };
+
+            ctx.Add(t);
+            return ctx.SaveChanges() > 0;
+        
         }
 
         public bool UpdateTitle(Title originalTitle, Title updateTitle)
@@ -178,6 +195,11 @@ namespace IMDBdataservice.Service
         public bool AddPerson(Person title)
         {
             throw new NotImplementedException();
+        
+      
+
+        
+        
         }
 
         public bool UpdatePerson(Person originalPerson, Person updatePerson)
