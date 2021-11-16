@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="FullSignature">
+  <Class Name="IMDBdataservice.BookmarkPerson" Collapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\BookmarkPerson.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Service.BaseService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAQAAAAABAEAAAAEJAQAAAIAAgIAAAAgIACAA=</HashCode>
+      <FileName>Service\BaseService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="IMDBdataservice.BookmarkTitle" Collapsed="true">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\BookmarkTitle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.CharacterName" Collapsed="true">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\CharacterName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Comment" Collapsed="true">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAEAAAAAAgAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Comment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Crew" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAIAAAAAAAAAAEAAAIAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Crew.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Director" Collapsed="true">
+    <Position X="3.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Domain\Director.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Episode" Collapsed="true">
+    <Position X="5.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAEAEAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Domain\Episode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Genre" Collapsed="true">
+    <Position X="7.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Domain\Genre.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.imdbContext" Collapsed="true">
+    <Position X="9" Y="1.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AFAAgDAAAaAQAOAAAJIEAEAAUAAAAAIACAQAAAAAIgA=</HashCode>
+      <FileName>imdbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.KnownForTitle" Collapsed="true">
+    <Position X="10.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\KnownForTitle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Omdb" Collapsed="true">
+    <Position X="12.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAQEAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Domain\Omdb.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Person" Collapsed="true">
+    <Position X="3.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAIAAAEAAAIAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Domain\Person.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.PersonRating" Collapsed="true">
+    <Position X="5.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAEAAAIAAAAACAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\PersonRating.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Principal" Collapsed="true">
+    <Position X="7.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAEAAAAAAAAAAACAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Domain\Principal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Profession" Collapsed="true">
+    <Position X="9" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Profession.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Program" Collapsed="true">
+    <Position X="10.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.QueryString" Collapsed="true">
+    <Position X="12.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAEAAAAAQAAAAAAIAAAAAAAQAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Domain\QueryString.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.SearchHistory" Collapsed="true">
+    <Position X="3.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAABAAAAACAAAAA=</HashCode>
+      <FileName>Domain\SearchHistory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Title" Collapsed="true">
+    <Position X="5.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABgAgAAAAAIAAAAEAAICAAAAAAAAAAAAIAQAAAAAAEA=</HashCode>
+      <FileName>Domain\Title.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.TitleRating" Collapsed="true">
+    <Position X="7.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAEAEAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\TitleRating.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.TitleVersion" Collapsed="true">
+    <Position X="9" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgAAAAAAiAAQAAAEAAAAAAAQAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\TitleVersion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.User" Collapsed="true">
+    <Position X="10.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAACAQAAAAAAAAA=</HashCode>
+      <FileName>Domain\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.UserTitleRating" Collapsed="true">
+    <Position X="12.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAgAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\UserTitleRating.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.WordIndex" Collapsed="true">
+    <Position X="3.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAEAAAAAAAAAAAAIAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Domain\WordIndex.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IMDBdataservice.Writer" Collapsed="true">
+    <Position X="5.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Writer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="IMDBdataservice.Service.IbaseService" Collapsed="true">
+    <Position X="3.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAQAAAAABAEAAAAEJAQAAAIAAgAAAAAgIACAA=</HashCode>
+      <FileName>Service\IbaseService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

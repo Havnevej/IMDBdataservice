@@ -9,7 +9,8 @@ namespace IMDBdataservice.Service
 {
     public class BaseService : IbaseService
     {
-        private static readonly imdbContext ctx = new();
+        public static readonly imdbContext ctx = new();
+        public imdbContext GetImdbContext (){ return ctx; }
 
 
         /*
@@ -20,10 +21,11 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public List<Title> SearchTitles(string search)
+        public List<Title> SearchTitles(Title title, QueryString queryString)
         {
             List<Title> orderList = new();
-            orderList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(search.ToLower())).ToList();
+            orderList = ctx.Titles.Where(x => x.PrimaryTitle.Contains(title.PrimaryTitle)).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToList();
                 return orderList;
         }
         public Title GetTitle(string id)
@@ -31,7 +33,7 @@ namespace IMDBdataservice.Service
             var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
             return title;
         }
-        public async Task<List<Title>> SeeRatingOfTitle(string id)
+        public async Task<List<Title>> GetRatingForTitle(string id)
         {
             List<Title> returns = new();
             await ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).ForEachAsync(x =>
@@ -45,22 +47,32 @@ namespace IMDBdataservice.Service
 
             return returns;
         }
-        public bool BookmarkTitle(string titleId, string userId)
+        public bool BookmarkTitle(BookmarkTitle bt)
         {
-            BookmarkTitle bt = new()
+            if (!ctx.BookmarkTitles.ToList().Any(x => x.UserId == bt.UserId && x.TitleId == bt.TitleId))
             {
-                TitleId = titleId,
-                UserId = userId
-            };
-
-            ctx.Add(bt);
-            return ctx.SaveChanges() > 0;
+                 ctx.Add(bt);
+                 return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
-        public void CommentTitle(string titleId, string comment) //good to have but not prio.
+        public object CommentTitle(Comment comment) //good to have but not prio.
         {
-            
+
+            ctx.Add(comment);
+
+            ctx.SaveChanges();
+            return new{Error="false",ErrorMessage=""};
         }
+
+        public List<Comment> GetCommentsByTitleId(string TitleId, QueryString queryString)
+        {
+            List<Comment> Result = ctx.Comments.Where(x => x.TitleId == TitleId).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToList();
+            return Result;
+        }
+
         public bool RateTitle(string userId, string titleId, string rating)
         {
             UserTitleRating rt = new()
@@ -114,15 +126,14 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public bool BookmarkPerson(string personId, string userId) {
-            BookmarkPerson bt = new()
+        public bool BookmarkPerson(BookmarkPerson bp)
+        {
+            if (!ctx.BookmarkPeople.ToList().Any(x => x.UserId == bp.UserId && x.PersonId == bp.PersonId))
             {
-                PersonId = personId,
-                UserId = userId
-            };
-
-            ctx.Add(bt);
-            return ctx.SaveChanges() > 0;
+                ctx.Add(bp);
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
         public void RatePerson() {}
@@ -141,17 +152,49 @@ namespace IMDBdataservice.Service
             return result;
         }
 
-        public List<Person> SearchPersons(string search)
+        public List<Person> SearchPersons(Person person, QueryString queryString) // Done in controller
         {
             List<Person> orderList = new();
-            orderList = ctx.People.Where(x => x.PersonName.ToLower().Contains(search.ToLower())).ToList();
+            orderList = ctx.People.Where(x => x.PersonName.Contains(person.PersonName)).Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToList();
             return orderList;
         }
-        public Person GetPerson(string id)
+        public Person GetPerson(string id) //Done in controller
         {
             var person = ctx.People.FirstOrDefault(x => x.PersonId == id);
             return person;
         }
+        // Not implemented functions
+        public bool AddTitle(Title title)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateTitle(Title originalTitle, Title updateTitle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddPerson(Person title)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdatePerson(Person originalPerson, Person updatePerson)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveTitle(Title titleToBeRemoved)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemovePerson(Person personToBeRemoved)
+        {
+            throw new NotImplementedException();
+        }
+
 
         public User GetUser(string id)
         {

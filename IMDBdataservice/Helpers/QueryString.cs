@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace IMDBdataservice
 {
+    //credit, course example
     public class QueryString
     {
         private int _pageSize = 10;
-        public string Genre { get; set; }
-        public const int MaxPageSize = 25;
+
+        public const int MaxPageSize = 500;
 
         public int Page { get; set; } = 0;
         public int PageSize
@@ -20,5 +21,10 @@ namespace IMDBdataservice
         }
 
         public string OrderBy { get; set; }
+        public string Genre { get; set; }
+        public string PrimaryTitle { get; set; }
+        public string PersonName { get; set; }
+
+
     }
 }
