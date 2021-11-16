@@ -9,6 +9,7 @@ using WebServiceToken.Attributes;
 using WebAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using WebServiceToken.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Controllers
 {
@@ -65,7 +66,7 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
-            long total = _dataService.GetImdbContext().Genres.Count();
+            long total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
             var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
             DataWithPaging re = new(genre.Result, linkBuilder);
             return Ok(re);
