@@ -166,25 +166,28 @@ namespace IMDBdataservice.Service
         // Not implemented functions
         public bool AddTitle(Title title)
         {
-            Title t = new()
-            {
-                TitleId = title.TitleId,
-                IsAdult = title.IsAdult,
-                EndYear = title.EndYear,
-                Genres = title.Genres,
-                KnownForTitles = title.KnownForTitles,
-                OriginalTitle = title.OriginalTitle,
-                PrimaryTitle = title.PrimaryTitle,
-                RunTimeMinutes = title.RunTimeMinutes,
-                StartYear = title.StartYear,
-                TitleRating = title.TitleRating,
-                TitleType = title.TitleType,
+            if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId)) {
+            
+                Title t = new()
+                {
+                    TitleId = title.TitleId,
+                    IsAdult = title.IsAdult,
+                    EndYear = title.EndYear,
+                    Genres = title.Genres,
+                    KnownForTitles = title.KnownForTitles,
+                    OriginalTitle = title.OriginalTitle,
+                    PrimaryTitle = title.PrimaryTitle,
+                    RunTimeMinutes = title.RunTimeMinutes,
+                    StartYear = title.StartYear,
+                    TitleRating = title.TitleRating,
+                    TitleType = title.TitleType,
 
-            };
-
-            ctx.Add(t);
-            return ctx.SaveChanges() > 0;
-        
+                };
+            
+                ctx.Add(t);
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
         public bool UpdateTitle(Title originalTitle, Title updateTitle)
