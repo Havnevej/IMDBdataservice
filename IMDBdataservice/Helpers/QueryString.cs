@@ -22,5 +22,9 @@ namespace IMDBdataservice
 
         public string OrderBy { get; set; }
         public string Genre { get; set; }
+        public string PrimaryTitle { get; set; }
+        public string PersonName { get; set; }
+
+
     }
 }
