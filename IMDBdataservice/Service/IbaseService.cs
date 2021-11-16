@@ -18,7 +18,7 @@ namespace IMDBdataservice.Service
         public bool RateTitle(string userId, string titleId, string rating);
         public Task<List<Title>> SearchTitleByGenre(QueryString queryString);
         public Task<List<Title>> GetTopTitles(QueryString queryString);
-        public Task<List<Title>> GetRatingForTitle(string id);
+        public float GetRatingForTitle(string id);
         public List<Comment> GetCommentsByTitleId(string titleId, QueryString queryString);
         //              PERSON
         public Person GetPerson(string personId);
@@ -27,7 +27,6 @@ namespace IMDBdataservice.Service
         public bool UpdatePerson(PersonDTO person);
         public List<Person> SearchPersons(Person person, QueryString queryString);
         public Task<List<Person>> GetMostFrequentPerson(string id);
-        public void RatePerson();
         public bool BookmarkPerson(BookmarkPerson bp);
         //              MISC
         public List<SearchHistory> GetSearchHistory();

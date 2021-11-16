@@ -33,19 +33,12 @@ namespace IMDBdataservice.Service
             var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
             return  title;
         }
-        public async Task<List<Title>> GetRatingForTitle(string id)
+        public float GetRatingForTitle(string id)
         {
-            List<Title> returns = new();
-            await ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).ForEachAsync(x =>
-            {
-                returns.Add(new Title
-                {
-                    PrimaryTitle = x.PrimaryTitle,
-                    TitleRating = x.TitleRating
-                });
-            });
+            var avg_rating = ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).FirstOrDefault().TitleRating.RatingAvg;
+            return (float)avg_rating;
 
-            return returns;
+
         }
         public bool BookmarkTitle(BookmarkTitle bt)
         {
@@ -89,7 +82,7 @@ namespace IMDBdataservice.Service
         public async Task<List<Title>> SearchTitleByGenre(QueryString queryString)
         {
             List<Title> result = new();
-#warning This has changed, genres is a list, make new logic
+
             result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToListAsync().Result;
             return result;
@@ -136,7 +129,7 @@ namespace IMDBdataservice.Service
             return false;
         }
 
-        public void RatePerson() {}
+
 
         public async Task<List<Person>> GetMostFrequentPerson(string id) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
             List<Person> result = new(); // Changed function

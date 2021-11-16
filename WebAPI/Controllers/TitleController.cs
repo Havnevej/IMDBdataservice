@@ -190,9 +190,14 @@ namespace WebAPI.Controllers
             return Ok(title);
         }
 
+        [HttpGet]
+        [Route("rating")]
+        public IActionResult GetRatingForTitle([FromBody] TitleDTO TitleRating)
+        {
+            var result = _dataService.GetRatingForTitle(TitleRating.TitleId);
 
-
-
+            return Ok(result);
+        }
         string IOurcontroller<Title>.GetUrl(Title obj)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });
