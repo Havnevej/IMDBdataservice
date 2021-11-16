@@ -107,7 +107,6 @@ namespace WebAPI.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("add/person")]
         public IActionResult AddPerson([FromBody] Person p) 
@@ -135,7 +134,6 @@ namespace WebAPI.Controllers
                 return BadRequest("Already removed");
             }
         }
-
 
 
         [HttpPost] // TODO: Add More error handling
