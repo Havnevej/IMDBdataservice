@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using IMDBdataservice.Service;
 using IMDBdataservice;
 using Microsoft.AspNetCore.Routing;
+using WebServiceToken.Attributes;
 
 namespace WebAPI.Controllers
 {
@@ -59,6 +60,20 @@ namespace WebAPI.Controllers
             }
 
             return Ok(genre.Result);
+        }
+        [Authorization]
+        [HttpGet]
+        [Route("gethist")]
+        public IActionResult Get__search_history()
+        {
+            var history = _dataService.GetSearchHistory();
+       
+            if (history == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(history);
         }
 
 

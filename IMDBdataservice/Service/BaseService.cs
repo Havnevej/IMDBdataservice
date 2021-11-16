@@ -153,7 +153,26 @@ namespace IMDBdataservice.Service
             return person;
         }
 
-        
+        public User GetUser(string id)
+        {
+            var person = ctx.Users.FirstOrDefault(x => x.UserId == id);
+            return person;
+        }
+
+        public void CreateUser(string userid, string username, string password = null, string salt = null)
+        {
+            User user = new()
+            {
+                UserId = userid,
+                UserName = username,
+                Password = password,
+                Salt = salt
+            };
+            ctx.Add(user);
+            ctx.SaveChanges();
+        }
+
+
         #region functions todo
 
         /*

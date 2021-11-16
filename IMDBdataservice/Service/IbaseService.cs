@@ -22,6 +22,9 @@ namespace IMDBdataservice.Service
         public Task<List<Person>> GetMostFrequentPerson(string id);
         public Task<List<Title>> SeeRatingOfTitle(string id);
 
+        public User GetUser(string id);
+        public void CreateUser(string userid, string username, string password = null, string salt = null);
+
 
         /*
         Title GetTitle(int id);
