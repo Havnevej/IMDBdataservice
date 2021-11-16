@@ -44,17 +44,15 @@ namespace WebAPI.Controllers
 
             var title = _dataService.GetTopTitles(queryString);
 
-            // Get total number of records
-            long total = _dataService.GetImdbContext().Titles.Count();
-
-            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
-
             if (title == null)
             {
                 return NotFound();
             }
 
+            long total = _dataService.GetImdbContext().Titles.Count();
+            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
             DataWithPaging re = new(title.Result, linkBuilder);
+
             return Ok(re);
         }
 
@@ -67,8 +65,10 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
-
-            return Ok(genre.Result);
+            long total = _dataService.GetImdbContext().Genres.Count();
+            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
+            DataWithPaging re = new(genre.Result, linkBuilder);
+            return Ok(re);
         }
         [Authorization]
         [HttpGet]
