@@ -164,8 +164,28 @@ namespace IMDBdataservice.Service
             var person = ctx.People.FirstOrDefault(x => x.PersonId == id);
             return person;
         }
+        // Not implemented functions
+        public bool AddTitle(Title title)
+        {
+            throw new NotImplementedException();
+        }
 
-        
+        public bool UpdateTitle(Title originalTitle, Title updateTitle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddPerson(Person title)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdatePerson(Person originalPerson, Person updatePerson)
+        {
+            throw new NotImplementedException();
+        }
+
+
         #region functions todo
 
         /*
