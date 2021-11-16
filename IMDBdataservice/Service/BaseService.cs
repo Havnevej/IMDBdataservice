@@ -155,7 +155,7 @@ namespace IMDBdataservice.Service
 
         public User GetUser(string id)
         {
-            var person = ctx.Users.FirstOrDefault(x => x.UserId == id);
+            User person = ctx.Users.FirstOrDefault(x => x.UserId == id);
             return person;
         }
 

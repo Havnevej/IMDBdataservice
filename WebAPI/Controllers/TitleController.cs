@@ -12,7 +12,7 @@ using WebServiceToken.Attributes;
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/titles")]
+    [Route("api/v3/titles")]
     public class TitleController : ControllerBase, IOurcontroller<Title>
     {
         IbaseService _dataService;
@@ -66,6 +66,10 @@ namespace WebAPI.Controllers
         [Route("gethist")]
         public IActionResult Get__search_history()
         {
+            try
+            {
+
+            
             var history = _dataService.GetSearchHistory();
        
             if (history == null)
@@ -74,7 +78,14 @@ namespace WebAPI.Controllers
             }
 
             return Ok(history);
+            }
+            catch
+            {
+                return Unauthorized();
+            }
+
         }
+
 
 
 
