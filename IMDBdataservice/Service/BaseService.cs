@@ -32,7 +32,7 @@ namespace IMDBdataservice.Service
             var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
             return title;
         }
-        public async Task<List<Title>> SeeRatingOfTitle(string id)
+        public async Task<List<Title>> GetRatingForTitle(string id)
         {
             List<Title> returns = new();
             await ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).ForEachAsync(x =>

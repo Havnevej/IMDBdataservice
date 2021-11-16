@@ -21,7 +21,7 @@ namespace IMDBdataservice.Service
         public Task<List<Title>> SearchTitleByGenre(QueryString queryString);
         public Task<List<Title>> GetTopTitles(QueryString queryString);
         public Task<List<Person>> GetMostFrequentPerson(string id);
-        public Task<List<Title>> SeeRatingOfTitle(string id);
+        public Task<List<Title>> GetRatingForTitle(string id);
 
 
         /*
