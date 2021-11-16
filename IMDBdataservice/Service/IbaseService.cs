@@ -11,7 +11,7 @@ namespace IMDBdataservice.Service
         public Title GetTitle(string titleId);
         public bool AddTitle(Title title);
         public bool RemoveTitle(Title titleToBeRemoved);
-        public bool UpdateTitle(Title originalTitle, Title updateTitle);
+        public bool UpdateTitle(TitleDTO title);
         public List<Title> SearchTitles(Title title, QueryString queryString);
         public bool BookmarkTitle(BookmarkTitle bt);
         public object CommentTitle(Comment comment);

@@ -154,6 +154,31 @@ namespace WebAPI.Controllers
 
             return Ok(title);
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult UpdateTitle(string id, [FromBody] TitleDTO title)
+        {
+            title.TitleId = id;
+            if (!_dataService.GetImdbContext().Titles.Any(x => x.TitleId == id))
+            {
+                return BadRequest("Id does not exits");
+            }
+            return Ok(_dataService.UpdateTitle(title));
+
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public IActionResult AddTitle([FromBody] Title title)
+        {
+            var result = _dataService.AddTitle(title);
+            return Ok(title);
+        }
+
+
+
+
         string IOurcontroller<Title>.GetUrl(Title obj)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });

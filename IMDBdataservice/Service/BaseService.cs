@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-
+using AutoMapper;
 namespace IMDBdataservice.Service
 {
     public class BaseService : IbaseService
@@ -31,7 +31,7 @@ namespace IMDBdataservice.Service
         public Title GetTitle(string id)
         {
             var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
-            return title;
+            return  title;
         }
         public async Task<List<Title>> GetRatingForTitle(string id)
         {
@@ -165,14 +165,32 @@ namespace IMDBdataservice.Service
             return person;
         }
         // Not implemented functions
-        public bool AddTitle(Title title)
+        public bool AddTitle(Title title) // still needs auto increment
         {
-            throw new NotImplementedException();
+            if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId && x.TitleType == title.TitleType && x.OriginalTitle == title.OriginalTitle && x.PrimaryTitle == title.PrimaryTitle && x.IsAdult == title.IsAdult && x.StartYear == title.StartYear && x.EndYear == title.EndYear && x.RunTimeMinutes == title.RunTimeMinutes))
+            {
+                ctx.Add(title);
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
-
-        public bool UpdateTitle(Title originalTitle, Title updateTitle)
+        public bool UpdateTitle(TitleDTO title)
         {
-            throw new NotImplementedException();
+            var dbTitle = GetTitle(title.TitleId);
+            if (dbTitle == null)
+            {
+                Console.WriteLine("hey");
+                return false;
+            }
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<TitleDTO, Title>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            });
+            
+            var mapper = new Mapper(config);
+            dbTitle = mapper.Map<TitleDTO, Title>(title,dbTitle);
+
+            return ctx.SaveChanges() > 0;
         }
 
         public bool AddPerson(Person title)
