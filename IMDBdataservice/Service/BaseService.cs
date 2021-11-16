@@ -168,23 +168,7 @@ namespace IMDBdataservice.Service
         {
             if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId)) {
             
-                Title t = new()
-                {
-                    TitleId = title.TitleId,
-                    IsAdult = title.IsAdult,
-                    EndYear = title.EndYear,
-                    Genres = title.Genres,
-                    KnownForTitles = title.KnownForTitles,
-                    OriginalTitle = title.OriginalTitle,
-                    PrimaryTitle = title.PrimaryTitle,
-                    RunTimeMinutes = title.RunTimeMinutes,
-                    StartYear = title.StartYear,
-                    TitleRating = title.TitleRating,
-                    TitleType = title.TitleType
-
-                };
-            
-                ctx.Add(t);
+                ctx.Add(title);
                 return ctx.SaveChanges() > 0;
             }
             return false;
@@ -198,16 +182,7 @@ namespace IMDBdataservice.Service
         public bool AddPerson(Person person)
         {
             if (!ctx.People.ToList().Any(x => x.PersonId == person.PersonId)) {
-            
-                Person p = new()
-                {
-                    PersonId = person.PersonId,
-                    Birthyear = person.Birthyear,
-                    Deathyear = person.Deathyear,
-                    PersonName = person.PersonName
-                
-                };
-            
+                    
                 ctx.Add(person);
                 return ctx.SaveChanges() > 0;
             }
@@ -222,12 +197,27 @@ namespace IMDBdataservice.Service
 
         public bool RemoveTitle(Title titleToBeRemoved)
         {
-            throw new NotImplementedException();
+            if (ctx.Titles.ToList().Any(x => x.TitleId == titleToBeRemoved.TitleId))
+            {
+               
+                var titleDelete = ctx.Titles.FirstOrDefault(x=> x.TitleId == titleToBeRemoved.TitleId);
+                ctx.Titles.Remove(titleDelete);
+
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
         public bool RemovePerson(Person personToBeRemoved)
         {
-            throw new NotImplementedException();
+            if (ctx.People.ToList().Any(x => x.PersonId == personToBeRemoved.PersonId))
+            {
+                var personDelete = ctx.People.FirstOrDefault(x => x.PersonId == personToBeRemoved.PersonId);
+                ctx.People.Remove(personDelete);
+
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
 
