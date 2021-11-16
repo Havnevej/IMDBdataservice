@@ -20,6 +20,7 @@ namespace IMDBdataservice
             set => _pageSize = value > MaxPageSize ? MaxPageSize : value;
         }
 
+        public string personId { get; set; }
         public string OrderBy { get; set; }
         public string Genre { get; set; }
         public string PrimaryTitle { get; set; }

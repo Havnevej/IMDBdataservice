@@ -138,18 +138,30 @@ namespace IMDBdataservice.Service
 
         public void RatePerson() {}
 
-        public async Task<List<Person>> GetMostFrequentPerson(string id) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
-            List<Person> result = new(); // Changed function
-#warning Changed function with new context, check if works
-            List<Title> titles_list = ctx.Titles.Include(x=>x.KnownForTitles).Where(x => x.KnownForTitles.FirstOrDefault().ToString().Contains(id)).ToList();
-            
-            titles_list.ForEach(x => {
+        public List<Person> GetMostFrequentPerson(QueryString queryString) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
+            List<Person> result = new();
+            //Find all co-workers:
+            //result = ctx.People.Include(x => x.KnownForTitles).Where(x => x.KnownForTitles.Any(x=>x.PersonId == queryString.personId)).ToList();
+
+            //Find all titles with our rockstar in it:
+            List<Title> result_t = new();
+            result_t = ctx.Titles.Include(x => x.KnownForTitles).Where(x => x.KnownForTitles.Any(x => x.PersonId == queryString.personId)).ToList();
+
+            //Find the most frequent co-star:
+            result_t.ForEach(x => {
                 List<Person> tt = new();
-                tt = ctx.People.Include(p => p).Where(p => p.PersonId == x.TitleId).ToList();
+                tt = ctx.People.Include(p => p.KnownForTitles).Where(p => p.KnownForTitles.Any(f => f.TitleId == x.TitleId)).ToList();
                 tt.ForEach(x => result.Add(x));
             });
-
-            return result;
+            //find co-stars that have been in more than one movie with our rock star:
+            var toremove = result.FirstOrDefault(x => x.PersonId == queryString.personId);
+            result.Remove(toremove);
+            
+            var ss = result.GroupBy(x => x)
+              .OrderByDescending(g => g.Count()).Take(5)
+              .Select(y => y.Key)
+              .ToList();
+            return ss;
         }
 
         public List<Person> SearchPersons(Person person, QueryString queryString) // Done in controller

@@ -29,9 +29,13 @@ namespace WebServiceToken.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterDto dto)
+        public IActionResult Register([FromBody]User dto)
         {
-            if (_dataService.GetUser(dto.Username) != null)
+            /*if (_dataService.GetUser(dto.Username) != null)
+            {
+                return BadRequest();
+            }*/
+            if (_dataService.GetImdbContext().Users.ToList().Any(x => x.UserName == dto.UserName))
             {
                 return BadRequest();
             }
@@ -46,9 +50,9 @@ namespace WebServiceToken.Controllers
             var salt = PasswordService.GenerateSalt(pwdSize);
             var pwd = PasswordService.HashPassword(dto.Password, salt, pwdSize);
 
-            _dataService.CreateUser(dto.Username, dto.Name, pwd, salt);
+            _dataService.CreateUser(dto.UserId, dto.UserName, pwd, salt);
 
-            return CreatedAtRoute(null, new { dto.Username});
+            return CreatedAtRoute(null, new { dto.UserName});
         }
 
         [HttpPost("login")]

@@ -26,7 +26,7 @@ namespace IMDBdataservice.Service
         public bool RemovePerson(Person personToBeRemoved);
         public bool UpdatePerson(Person originalPerson, Person updatePerson);
         public List<Person> SearchPersons(Person person, QueryString queryString);
-        public Task<List<Person>> GetMostFrequentPerson(string id);
+        public List<Person> GetMostFrequentPerson(QueryString queryString);
         public void RatePerson();
         public bool BookmarkPerson(BookmarkPerson bp);
         //              MISC

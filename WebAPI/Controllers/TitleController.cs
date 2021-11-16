@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Routing;
 using WebServiceToken.Attributes;
 using WebAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using WebServiceToken.Models;
 
 namespace WebAPI.Controllers
 {
@@ -94,6 +95,26 @@ namespace WebAPI.Controllers
 
         }
 
+        [HttpGet]
+        [Route("freq")]
+        public IActionResult amazing([FromQuery] QueryString queryString)
+        {
+            var result = _dataService.GetMostFrequentPerson(queryString);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result.Select(cc));
+        }
+
+        private Freq cc(Person person)
+        {
+            return new Freq
+            {
+                name = person.PersonName
+            };
+        }
 
         [HttpGet]
         [Route("search/primary")]
