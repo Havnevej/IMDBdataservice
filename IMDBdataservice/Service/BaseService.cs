@@ -21,7 +21,7 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public List<Title> SearchTitles(Title title, QueryString queryString)
+        public List<Title> SearchTitles(Title title, QueryStringOur queryString)
         {
             List<Title> orderList = new();
             orderList = ctx.Titles.Where(x => x.PrimaryTitle.Contains(title.PrimaryTitle)).Skip(queryString.Page * queryString.PageSize)
@@ -58,27 +58,24 @@ namespace IMDBdataservice.Service
             return new{Error="false",ErrorMessage=""};
         }
 
-        public List<Comment> GetCommentsByTitleId(string TitleId, QueryString queryString)
+        public List<Comment> GetCommentsByTitleId(string TitleId, QueryStringOur queryString)
         {
             List<Comment> Result = ctx.Comments.Where(x => x.TitleId == TitleId).Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToList();
             return Result;
         }
 
-        public bool RateTitle(string userId, string titleId, string rating)
+        public bool RateTitle(UserTitleRating urt)
         {
-            UserTitleRating rt = new()
-            {
-                TitleId = titleId,
-                Username = userId,
-                Rating = rating
-            };
+            if (!ctx.UserTitleRatings.Any(x => x.Username == urt.Username && x.TitleId == urt.TitleId && x.Rating == urt.Rating)){
+                ctx.Add(urt);
+                return ctx.SaveChanges() > 0;
 
-            ctx.Add(rt);
-            return ctx.SaveChanges() > 0;
+            }
+            return false;
 
         }
-        public async Task<List<Title>> SearchTitleByGenre(QueryString queryString)
+        public async Task<List<Title>> SearchTitleByGenre(QueryStringOur queryString)
         {
             List<Title> result = new();
 
@@ -87,7 +84,7 @@ namespace IMDBdataservice.Service
             return result;
         }
 
-        public async Task<List<Title>> GetTopTitles(QueryString queryString)
+        public async Task<List<Title>> GetTopTitles(QueryStringOur queryString)
         { //works but too many top movies with rating 10*
             List<Title> result = new();
             result = ctx.Titles.Include(x => x.TitleRating).OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
@@ -103,10 +100,11 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public List<SearchHistory> GetSearchHistory()
+        public List<SearchHistory> GetSearchHistory(string username, QueryStringOur queryString)
         {
             List<SearchHistory> result = new();
-            result = ctx.SearchHistories.ToList();
+            result = ctx.SearchHistories.Skip(queryString.Page * queryString.PageSize)
+                .Take(queryString.PageSize).ToList();
             return result;
         }
 
@@ -130,7 +128,7 @@ namespace IMDBdataservice.Service
 
 
 
-        public List<Person> GetMostFrequentPerson(QueryString queryString) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
+        public List<Person> GetMostFrequentPerson(QueryStringOur queryString) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
             List<Person> result = new();
             //Find all co-workers:
             //result = ctx.People.Include(x => x.KnownForTitles).Where(x => x.KnownForTitles.Any(x=>x.PersonId == queryString.personId)).ToList();
@@ -156,7 +154,7 @@ namespace IMDBdataservice.Service
             return ss;
         }
 
-        public List<Person> SearchPersons(Person person, QueryString queryString) // Done in controller
+        public List<Person> SearchPersons(Person person, QueryStringOur queryString) // Done in controller
         {
             List<Person> orderList = new();
             orderList = ctx.People.Where(x => x.PersonName.Contains(person.PersonName)).Skip(queryString.Page * queryString.PageSize)

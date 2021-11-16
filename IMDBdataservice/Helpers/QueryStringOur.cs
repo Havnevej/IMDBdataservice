@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IMDBdataservice
 {
     //credit, course example
-    public class QueryString
+    public class QueryStringOur
     {
         private int _pageSize = 10;
 
