@@ -5,7 +5,10 @@ using System.Linq;
 using IMDBdataservice.Service;
 using IMDBdataservice;
 using Microsoft.AspNetCore.Routing;
+using WebServiceToken.Attributes;
 using WebAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using WebServiceToken.Models;
 
 namespace WebAPI.Controllers
 {
@@ -66,6 +69,51 @@ namespace WebAPI.Controllers
             }
 
             return Ok(genre.Result);
+        }
+        [Authorization]
+        [HttpGet]
+        [Route("gethist")]
+        public IActionResult Get__search_history()
+        {
+            try
+            {
+
+            
+            var history = _dataService.GetSearchHistory();
+       
+            if (history == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(history);
+            }
+            catch
+            {
+                return Unauthorized();
+            }
+
+        }
+
+        [HttpGet]
+        [Route("freq")]
+        public IActionResult amazing([FromQuery] QueryString queryString)
+        {
+            var result = _dataService.GetMostFrequentPerson(queryString);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result.Select(cc));
+        }
+
+        private Freq cc(Person person)
+        {
+            return new Freq
+            {
+                name = person.PersonName
+            };
         }
 
         [HttpGet]

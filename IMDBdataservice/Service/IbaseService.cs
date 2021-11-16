@@ -26,11 +26,16 @@ namespace IMDBdataservice.Service
         public bool RemovePerson(Person personToBeRemoved);
         public bool UpdatePerson(PersonDTO person);
         public List<Person> SearchPersons(Person person, QueryString queryString);
-        public Task<List<Person>> GetMostFrequentPerson(string id);
+        public List<Person> GetMostFrequentPerson(QueryString queryString);
+        public void RatePerson();
         public bool BookmarkPerson(BookmarkPerson bp);
         //              MISC
         public List<SearchHistory> GetSearchHistory();
         public imdbContext GetImdbContext();
+
+        public User GetUser(string id);
+        public void CreateUser(string userid, string username, string password = null, string salt = null);
+        public void DeleteUser(string username);
 
 
         /*
