@@ -127,6 +127,65 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        [Route("add")]
+        public IActionResult AddTitle([FromBody] Title t) 
+        {
+            if (_dataService.AddTitle(t))
+            {
+               return Ok("inserted");
+            }
+            else
+            {
+                return BadRequest("Already exists");
+            }
+        }
+
+        [HttpPost]
+        [Route("remove")]
+        public IActionResult RemoveTitle([FromBody] Title t)
+        {
+            if (_dataService.RemoveTitle(t))
+            {
+                return Ok("removed");
+            }
+            else
+            {
+                return BadRequest("Already removed");
+            }
+        }
+
+
+        [HttpPost]
+        [Route("add/person")]
+        public IActionResult AddPerson([FromBody] Person p) 
+        {
+            if (_dataService.AddPerson(p))
+            {
+               return Ok("inserted");
+            }
+            else
+            {
+                return BadRequest("Already exists");
+            }
+        }
+
+        [HttpPost]
+        [Route("remove/person")]
+        public IActionResult RemovePerson([FromBody] Person p)
+        {
+            if (_dataService.RemovePerson(p))
+            {
+                return Ok("removed");
+            }
+            else
+            {
+                return BadRequest("Already removed");
+            }
+        }
+
+
+
         [HttpPost] // TODO: Add More error handling
         [Route("bookmark/title")]
         public IActionResult BookmarkTitle([FromBody] BookmarkTitle bt) 

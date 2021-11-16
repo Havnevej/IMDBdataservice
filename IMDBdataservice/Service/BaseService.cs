@@ -52,10 +52,9 @@ namespace IMDBdataservice.Service
 
         public object CommentTitle(Comment comment) //good to have but not prio.
         {
-
             ctx.Add(comment);
-
             ctx.SaveChanges();
+            
             return new{Error="false",ErrorMessage=""};
         }
 
@@ -172,8 +171,8 @@ namespace IMDBdataservice.Service
         // Not implemented functions
         public bool AddTitle(Title title) // still needs auto increment
         {
-            if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId && x.TitleType == title.TitleType && x.OriginalTitle == title.OriginalTitle && x.PrimaryTitle == title.PrimaryTitle && x.IsAdult == title.IsAdult && x.StartYear == title.StartYear && x.EndYear == title.EndYear && x.RunTimeMinutes == title.RunTimeMinutes))
-            {
+            if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId)) {
+            
                 ctx.Add(title);
                 return ctx.SaveChanges() > 0;
             }
@@ -198,9 +197,15 @@ namespace IMDBdataservice.Service
             return ctx.SaveChanges() > 0;
         }
 
-        public bool AddPerson(Person title)
+        public bool AddPerson(Person person)
         {
-            throw new NotImplementedException();
+            if (!ctx.People.ToList().Any(x => x.PersonId == person.PersonId)) {
+                    
+                ctx.Add(person);
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
+        
         }
 
         public bool UpdatePerson(PersonDTO person)
@@ -224,12 +229,27 @@ namespace IMDBdataservice.Service
 
         public bool RemoveTitle(Title titleToBeRemoved)
         {
-            throw new NotImplementedException();
+            if (ctx.Titles.ToList().Any(x => x.TitleId == titleToBeRemoved.TitleId))
+            {
+               
+                var titleDelete = ctx.Titles.FirstOrDefault(x=> x.TitleId == titleToBeRemoved.TitleId);
+                ctx.Titles.Remove(titleDelete);
+
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
         public bool RemovePerson(Person personToBeRemoved)
         {
-            throw new NotImplementedException();
+            if (ctx.People.ToList().Any(x => x.PersonId == personToBeRemoved.PersonId))
+            {
+                var personDelete = ctx.People.FirstOrDefault(x => x.PersonId == personToBeRemoved.PersonId);
+                ctx.People.Remove(personDelete);
+
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         }
 
 
