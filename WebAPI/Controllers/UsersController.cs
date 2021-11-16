@@ -10,13 +10,14 @@ using IMDBdataservice.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using WebServiceToken.Attributes;
 using WebServiceToken.Models;
 using WebServiceToken.Services;
 
 namespace WebServiceToken.Controllers
 {
     [ApiController]
-    [Route("api/v3/users")]
+    [Route("api/users")]
     public class UsersController : ControllerBase
     {
         private readonly IbaseService _dataService;
@@ -44,7 +45,7 @@ namespace WebServiceToken.Controllers
 
             if (pwdSize == 0)
             {
-                throw new ArgumentException("No password size");
+                return BadRequest("No password size");
             }
 
             var salt = PasswordService.GenerateSalt(pwdSize);
@@ -52,7 +53,7 @@ namespace WebServiceToken.Controllers
 
             _dataService.CreateUser(dto.UserId, dto.UserName, pwd, salt);
 
-            return CreatedAtRoute(null, new { dto.UserName});
+            return CreatedAtRoute(null, dto);
         }
 
         [HttpPost("login")]
@@ -101,6 +102,20 @@ namespace WebServiceToken.Controllers
             var token = tokenHandler.WriteToken(securityToken);
             
             return Ok(new {dto.Username, token});
+        }
+        [Authorization]
+        [HttpPost("delete")]
+        public IActionResult Delete([FromBody]LoginDto dto)
+        {
+            
+            if (!_dataService.GetImdbContext().Users.ToList().Any(x => x.UserName == dto.Username))
+            {
+                return BadRequest();
+            }
+
+            _dataService.DeleteUser(dto.Username);
+
+            return Ok(new {message="Deleted User!"});
         }
 
     }

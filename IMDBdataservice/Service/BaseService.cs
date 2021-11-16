@@ -226,6 +226,12 @@ namespace IMDBdataservice.Service
             ctx.Add(user);
             ctx.SaveChanges();
         }
+        public void DeleteUser(string username)
+        {
+            var user = ctx.Users.FirstOrDefault(x => x.UserName == username);
+            ctx.Users.Remove(user);
+            ctx.SaveChanges();
+        }
 
 
         #region functions todo

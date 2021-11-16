@@ -35,6 +35,7 @@ namespace IMDBdataservice.Service
 
         public User GetUser(string id);
         public void CreateUser(string userid, string username, string password = null, string salt = null);
+        public void DeleteUser(string username);
 
 
         /*

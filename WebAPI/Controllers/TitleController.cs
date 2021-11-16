@@ -13,7 +13,7 @@ using WebServiceToken.Models;
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/v3/titles")]
+    [Route("api/titles")]
     public class TitleController : ControllerBase, IOurcontroller<Title>
     {
         IbaseService _dataService;
