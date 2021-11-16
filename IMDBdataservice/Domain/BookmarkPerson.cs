@@ -7,7 +7,7 @@ namespace IMDBdataservice
 {
     public partial class BookmarkPerson
     {
-        public string UserId { get; set; }
+        public string Username { get; set; }
         public string PersonId { get; set; }
     }
 }

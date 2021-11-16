@@ -57,14 +57,14 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<BookmarkPerson>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.PersonId })
+                entity.HasKey(e => new { e.Username, e.PersonId })
                     .HasName("bookmark_person_pkey");
 
                 entity.ToTable("bookmark_person");
 
-                entity.Property(e => e.UserId)
+                entity.Property(e => e.Username)
                     .HasMaxLength(255)
-                    .HasColumnName("user_id");
+                    .HasColumnName("username");
 
                 entity.Property(e => e.PersonId)
                     .HasMaxLength(255)
@@ -73,14 +73,14 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<BookmarkTitle>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.TitleId })
+                entity.HasKey(e => new { e.Username, e.TitleId })
                     .HasName("bookmark_title_pkey");
 
                 entity.ToTable("bookmark_title");
 
-                entity.Property(e => e.UserId)
+                entity.Property(e => e.Username)
                     .HasMaxLength(255)
-                    .HasColumnName("user_id");
+                    .HasColumnName("username");
 
                 entity.Property(e => e.TitleId)
                     .HasMaxLength(255)
@@ -109,14 +109,14 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<Comment>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.Date })
+                entity.HasKey(e => new { e.Username, e.Date })
                     .HasName("comment_pkey");
 
                 entity.ToTable("comment");
 
-                entity.Property(e => e.UserId)
+                entity.Property(e => e.Username)
                     .HasMaxLength(255)
-                    .HasColumnName("user_id");
+                    .HasColumnName("username");
 
                 entity.Property(e => e.Date)
                     .HasMaxLength(255)
@@ -330,14 +330,14 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<SearchHistory>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.Date })
+                entity.HasKey(e => new { e.Username, e.Date })
                     .HasName("search_history_pkey");
 
                 entity.ToTable("search_history");
 
-                entity.Property(e => e.UserId)
+                entity.Property(e => e.Username)
                     .HasMaxLength(255)
-                    .HasColumnName("user_id");
+                    .HasColumnName("username");
 
                 entity.Property(e => e.Date)
                     .HasMaxLength(255)
@@ -447,34 +447,42 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.HasKey(e => e.Username)
+                    .HasName("user_pkey");
+
                 entity.ToTable("user");
 
-                entity.Property(e => e.UserId)
+                entity.Property(e => e.Username)
                     .HasMaxLength(255)
-                    .HasColumnName("user_id");
+                    .HasColumnName("username");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("date")
+                    .HasColumnName("created_date");
 
                 entity.Property(e => e.Password)
+                    .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("password");
 
-                entity.Property(e => e.UserName)
-                    .HasMaxLength(255)
-                    .HasColumnName("user_name");
                 entity.Property(e => e.Salt)
+                    .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("salt");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
             });
 
             modelBuilder.Entity<UserTitleRating>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.TitleId })
+                entity.HasKey(e => new { e.Username, e.TitleId })
                     .HasName("user_title_rating_pkey");
 
                 entity.ToTable("user_title_rating");
 
-                entity.Property(e => e.UserId)
+                entity.Property(e => e.Username)
                     .HasMaxLength(255)
-                    .HasColumnName("user_id");
+                    .HasColumnName("username");
 
                 entity.Property(e => e.TitleId)
                     .HasMaxLength(255)
