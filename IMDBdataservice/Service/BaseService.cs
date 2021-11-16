@@ -49,7 +49,7 @@ namespace IMDBdataservice.Service
         }
         public bool BookmarkTitle(BookmarkTitle bt)
         {
-            if (!ctx.BookmarkTitles.ToList().Any(x => x.UserId == bt.UserId && x.TitleId == bt.TitleId))
+            if (!ctx.BookmarkTitles.ToList().Any(x => x.Username == bt.Username && x.TitleId == bt.TitleId))
             {
                  ctx.Add(bt);
                  return ctx.SaveChanges() > 0;
@@ -78,7 +78,7 @@ namespace IMDBdataservice.Service
             UserTitleRating rt = new()
             {
                 TitleId = titleId,
-                UserId = userId,
+                Username = userId,
                 Rating = rating
             };
 
@@ -128,7 +128,7 @@ namespace IMDBdataservice.Service
          */
         public bool BookmarkPerson(BookmarkPerson bp)
         {
-            if (!ctx.BookmarkPeople.ToList().Any(x => x.UserId == bp.UserId && x.PersonId == bp.PersonId))
+            if (!ctx.BookmarkPeople.ToList().Any(x => x.Username == bp.Username && x.PersonId == bp.PersonId))
             {
                 ctx.Add(bp);
                 return ctx.SaveChanges() > 0;
