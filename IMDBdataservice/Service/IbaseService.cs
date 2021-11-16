@@ -10,6 +10,7 @@ namespace IMDBdataservice.Service
         //              TITLE
         public Title GetTitle(string titleId);
         public bool AddTitle(Title title);
+        public bool RemoveTitle(Title titleToBeRemoved);
         public bool UpdateTitle(Title originalTitle, Title updateTitle);
         public List<Title> SearchTitles(Title title, QueryString queryString);
         public bool BookmarkTitle(BookmarkTitle bt);
@@ -22,6 +23,7 @@ namespace IMDBdataservice.Service
         //              PERSON
         public Person GetPerson(string personId);
         public bool AddPerson(Person title);
+        public bool RemovePerson(Person personToBeRemoved);
         public bool UpdatePerson(Person originalPerson, Person updatePerson);
         public List<Person> SearchPersons(Person person, QueryString queryString);
         public Task<List<Person>> GetMostFrequentPerson(string id);

@@ -185,6 +185,16 @@ namespace IMDBdataservice.Service
             throw new NotImplementedException();
         }
 
+        public bool RemoveTitle(Title titleToBeRemoved)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemovePerson(Person personToBeRemoved)
+        {
+            throw new NotImplementedException();
+        }
+
 
         #region functions todo
 
