@@ -1,4 +1,5 @@
 using IMDBdataservice.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,7 +33,9 @@ namespace WebAPI
             //services.AddScoped<IbaseService, BaseService>();
             services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddSingleton<IbaseService, BaseService>();
-
+            services.AddAuthentication(sharedopt => sharedopt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme);
+            services.AddAuthorization();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,11 +47,10 @@ namespace WebAPI
             }
 
             app.UseHttpsRedirection();
-
+            
             app.UseRouting();
             app.UseJwtAuth();
-
-            app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {

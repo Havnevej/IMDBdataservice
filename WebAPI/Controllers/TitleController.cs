@@ -7,6 +7,7 @@ using IMDBdataservice;
 using Microsoft.AspNetCore.Routing;
 using WebServiceToken.Attributes;
 using WebAPI.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers
 {
