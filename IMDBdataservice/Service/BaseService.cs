@@ -244,8 +244,8 @@ namespace IMDBdataservice.Service
         {
             if (ctx.People.ToList().Any(x => x.PersonId == personToBeRemoved.PersonId))
             {
-                var personDelete = ctx.People.FirstOrDefault(x => x.PersonId == personToBeRemoved.PersonId);
-                ctx.People.Remove(personDelete);
+                var personRemove = ctx.People.FirstOrDefault(x => x.PersonId == personToBeRemoved.PersonId);
+                ctx.People.Remove(personRemove);
 
                 return ctx.SaveChanges() > 0;
             }
