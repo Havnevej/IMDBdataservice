@@ -462,12 +462,12 @@ namespace IMDBdataservice
 
                 entity.Property(e => e.Password)
                     .IsRequired()
-                    .HasMaxLength(255)
+                    .HasMaxLength(1024)
                     .HasColumnName("password");
 
                 entity.Property(e => e.Salt)
                     .IsRequired()
-                    .HasMaxLength(255)
+                    .HasMaxLength(1024)
                     .HasColumnName("salt");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
