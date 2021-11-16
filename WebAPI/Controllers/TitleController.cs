@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("add/title")]
+        [Route("add")]
         public IActionResult Title([FromBody] Title t) 
         {
             if (_dataService.AddTitle(t))
@@ -92,7 +92,20 @@ namespace WebAPI.Controllers
                 return BadRequest("Already exists");
             }
         }
-        
+
+        [HttpPost]
+        [Route("add/person")]
+        public IActionResult AddPerson([FromBody] Person p) 
+        {
+            if (_dataService.AddPerson(p))
+            {
+               return Ok("inserted");
+            }
+            else
+            {
+                return BadRequest("Already exists");
+            }
+        }
     
         [HttpPost] // TODO: Add More error handling
         [Route("bookmark/title")]

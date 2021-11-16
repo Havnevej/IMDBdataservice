@@ -180,7 +180,7 @@ namespace IMDBdataservice.Service
                     RunTimeMinutes = title.RunTimeMinutes,
                     StartYear = title.StartYear,
                     TitleRating = title.TitleRating,
-                    TitleType = title.TitleType,
+                    TitleType = title.TitleType
 
                 };
             
@@ -195,13 +195,23 @@ namespace IMDBdataservice.Service
             throw new NotImplementedException();
         }
 
-        public bool AddPerson(Person title)
+        public bool AddPerson(Person person)
         {
-            throw new NotImplementedException();
-        
-      
-
-        
+            if (!ctx.People.ToList().Any(x => x.PersonId == person.PersonId)) {
+            
+                Person p = new()
+                {
+                    PersonId = person.PersonId,
+                    Birthyear = person.Birthyear,
+                    Deathyear = person.Deathyear,
+                    PersonName = person.PersonName
+                
+                };
+            
+                ctx.Add(person);
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
         
         }
 
