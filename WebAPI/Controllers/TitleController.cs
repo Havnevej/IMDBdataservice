@@ -168,6 +168,20 @@ namespace WebAPI.Controllers
 
         }
 
+
+        [HttpPut]
+        [Route("person/{id}")]
+        public IActionResult UpdatePerson(string id, [FromBody] PersonDTO person)
+        {
+            person.PersonId = id;
+            if (!_dataService.GetImdbContext().People.Any(x => x.PersonId == id))
+            {
+                return BadRequest("Id does not exits");
+            }
+            return Ok(_dataService.UpdatePerson(person));
+
+        }
+
         [HttpPost]
         [Route("add")]
         public IActionResult AddTitle([FromBody] Title title)

@@ -198,9 +198,23 @@ namespace IMDBdataservice.Service
             throw new NotImplementedException();
         }
 
-        public bool UpdatePerson(Person originalPerson, Person updatePerson)
+        public bool UpdatePerson(PersonDTO person)
         {
-            throw new NotImplementedException();
+            var dbPerson = GetPerson(person.PersonId);
+            if (dbPerson == null)
+            {
+  
+                return false;
+            }
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<PersonDTO, Person>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            });
+
+            var mapper = new Mapper(config);
+            dbPerson = mapper.Map<PersonDTO, Person>(person, dbPerson);
+
+            return ctx.SaveChanges() > 0;
         }
 
         public bool RemoveTitle(Title titleToBeRemoved)
