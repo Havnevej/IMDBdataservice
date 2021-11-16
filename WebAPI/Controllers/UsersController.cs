@@ -36,7 +36,7 @@ namespace WebServiceToken.Controllers
             {
                 return BadRequest();
             }*/
-            if (_dataService.GetImdbContext().Users.ToList().Any(x => x.UserName == dto.UserName))
+            if (_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == dto.Username))
             {
                 return BadRequest();
             }
@@ -51,7 +51,7 @@ namespace WebServiceToken.Controllers
             var salt = PasswordService.GenerateSalt(pwdSize);
             var pwd = PasswordService.HashPassword(dto.Password, salt, pwdSize);
 
-            _dataService.CreateUser(dto.UserId, dto.UserName, pwd, salt);
+            _dataService.CreateUser(dto.Username, pwd, salt);
 
             return CreatedAtRoute(null, dto);
         }
@@ -108,7 +108,7 @@ namespace WebServiceToken.Controllers
         public IActionResult Delete([FromBody]LoginDto dto)
         {
             
-            if (!_dataService.GetImdbContext().Users.ToList().Any(x => x.UserName == dto.Username))
+            if (!_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == dto.Username))
             {
                 return BadRequest();
             }

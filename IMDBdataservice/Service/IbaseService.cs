@@ -31,9 +31,9 @@ namespace IMDBdataservice.Service
         //              MISC
         public List<SearchHistory> GetSearchHistory();
         public imdbContext GetImdbContext();
-
-        public User GetUser(string id);
-        public void CreateUser(string userid, string username, string password = null, string salt = null);
+        //              USER
+        public User GetUser(string username);
+        public void CreateUser(string username, string password = null, string salt = null);
         public void DeleteUser(string username);
 
 

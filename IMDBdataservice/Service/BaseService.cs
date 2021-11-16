@@ -253,18 +253,18 @@ namespace IMDBdataservice.Service
         }
 
 
-        public User GetUser(string id)
+        public User GetUser(string username)
         {
-            User person = ctx.Users.FirstOrDefault(x => x.UserId == id);
+            User person = ctx.Users.FirstOrDefault(x => x.Username == username);
             return person;
         }
 
-        public void CreateUser(string userid, string username, string password = null, string salt = null)
+        public void CreateUser(string username, string password = null, string salt = null)
         {
             User user = new()
             {
-                UserId = userid,
-                UserName = username,
+                UserId = ctx.Users.Max(x=>x.UserId)+1,
+                Username = username,
                 Password = password,
                 Salt = salt
             };
@@ -273,7 +273,7 @@ namespace IMDBdataservice.Service
         }
         public void DeleteUser(string username)
         {
-            var user = ctx.Users.FirstOrDefault(x => x.UserName == username);
+            var user = ctx.Users.FirstOrDefault(x => x.Username == username);
             ctx.Users.Remove(user);
             ctx.SaveChanges();
         }

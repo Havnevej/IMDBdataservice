@@ -128,20 +128,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("add")]
-        public IActionResult AddTitle([FromBody] Title t) 
-        {
-            if (_dataService.AddTitle(t))
-            {
-               return Ok("inserted");
-            }
-            else
-            {
-                return BadRequest("Already exists");
-            }
-        }
-
-        [HttpPost]
         [Route("remove")]
         public IActionResult RemoveTitle([FromBody] Title t)
         {
