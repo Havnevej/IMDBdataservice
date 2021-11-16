@@ -9,13 +9,14 @@ namespace IMDBdataservice.Service
         //Functions go here
         public imdbContext GetImdbContext();
         public Title GetTitle(string titleId);
-        public List<Title> SearchTitles(string search);
-        public List<Person> SearchPersons(string search);
+        public List<Title> SearchTitles(Title title, QueryString queryString);
+        public List<Person> SearchPersons(Person person, QueryString queryString);
         public Person GetPerson(string personId);
-        public bool BookmarkTitle(string titleId, string userId);
-        public void CommentTitle(string titleId, string comment);
+        public bool BookmarkTitle(BookmarkTitle bt);
+        public object CommentTitle(Comment comment);
+        public List<Comment> GetCommentsByTitleId(string titleId, QueryString queryString);
         public List<SearchHistory> GetSearchHistory();
-        public bool BookmarkPerson(string personId, string userId);
+        public bool BookmarkPerson(BookmarkPerson bp);
         public bool RateTitle(string userId, string titleId, string rating);
         public void RatePerson();
         public Task<List<Title>> SearchTitleByGenre(QueryString queryString);

@@ -68,8 +68,92 @@ namespace WebAPI.Controllers
             return Ok(genre.Result);
         }
 
+        [HttpGet]
+        [Route("search/primary")]
+        public IActionResult SearchTitles([FromBody] Title title,[FromQuery] QueryString queryString) {
+            var result = _dataService.SearchTitles(title, queryString);
+            if (result.Count == 0)
+            {
+                return Ok("{\"message\":\"No results found\"}");
+            }
+            return Ok(result);
+        }
+
+        [HttpPost] // TODO: Add More error handling
+        [Route("bookmark/title")]
+        public IActionResult BookmarkTitle([FromBody] BookmarkTitle bt) 
+        {
+            if (_dataService.BookmarkTitle(bt))
+            {
+               return Ok("inserted");
+            }
+            else
+            {
+                return BadRequest("Already exists");
+            }
+        }
 
 
+        [HttpPost] // TODO: Add More error handling
+        [Route("bookmark/person")]
+        public IActionResult BookmarkPerson([FromBody] BookmarkPerson bp)
+        {
+            if (_dataService.BookmarkPerson(bp))
+            {
+                return Ok("inserted");
+            }
+            else
+            {
+                return BadRequest("Already exists");
+            }
+        }
+
+        [HttpPost] // TODO: Add More error handling
+        [Route("comments")] 
+        public IActionResult CommentTitle([FromBody] Comment comment)
+        {
+            _dataService.CommentTitle(comment);
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("comments/{id}")] 
+        public IActionResult GetCommentsByTitleId(string id, [FromQuery] QueryString queryString)
+        {
+            var result = _dataService.GetCommentsByTitleId(id, queryString);
+            if (result.Count == 0)
+            {
+                return Ok("{\"message\":\"No comments\"}");
+            }
+            return Ok(result);
+        }
+
+
+        [HttpGet]
+        [Route("search/person")] //Weird route aagain
+        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryString queryString)
+        {
+            var result = _dataService.SearchPersons(person, queryString);
+            if (result.Count == 0)
+            {
+                return Ok("{\"message\":\"No results found\"}");
+            }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("person/{id}")] //Route is weird, make person controller?
+        public IActionResult GetPerson(string id)
+        {
+            var title = _dataService.GetPerson(id);
+
+            if (title == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(title);
+        }
         string IOurcontroller<Title>.GetUrl(Title obj)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });
