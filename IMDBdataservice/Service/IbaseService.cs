@@ -23,7 +23,7 @@ namespace IMDBdataservice.Service
         //              PERSON
         public Person GetPerson(string personId);
         public bool AddPerson(Person title);
-        public bool RemovePerson(Person personToBeRemoved);
+        public bool RemovePerson(string personId);
         public bool UpdatePerson(PersonDTO person);
         public List<Person> SearchPersons(Person person, QueryString queryString);
         public List<Person> GetMostFrequentPerson(QueryString queryString);

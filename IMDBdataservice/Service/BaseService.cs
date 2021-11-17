@@ -268,11 +268,11 @@ namespace IMDBdataservice.Service
             return ctx.SaveChanges() > 0;
         }
 
-        public bool RemovePerson(Person personToBeRemoved)
+        public bool RemovePerson(string personId)
         {
-            if (ctx.People.ToList().Any(x => x.PersonId == personToBeRemoved.PersonId))
+            if (ctx.People.ToList().Any(x => x.PersonId == personId))
             {
-                var personRemove = ctx.People.FirstOrDefault(x => x.PersonId == personToBeRemoved.PersonId);
+                var personRemove = ctx.People.FirstOrDefault(x => x.PersonId ==personId);
                 ctx.People.Remove(personRemove);
 
                 return ctx.SaveChanges() > 0;

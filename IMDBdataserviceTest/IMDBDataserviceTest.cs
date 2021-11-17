@@ -46,6 +46,7 @@ namespace IMDBdataserviceTest
             Assert.Equal("testing_register6767", user["name"]);
         }
 
+        /*
         [Fact]
         public void ApiUser_DeleteUser()
         {
@@ -55,6 +56,7 @@ namespace IMDBdataserviceTest
             Assert.Equal("Deleted User!", data["message"]);
 
         }
+        */
 
         //Person Test *------------------------------------------------------------------------*
 
@@ -86,15 +88,21 @@ namespace IMDBdataserviceTest
         
 
         [Fact]
-        public void ApiUser_DeletePerson()
+        public void ApiUser_RemovePerson()
         {
-            var (data, statusCode) = DeleteData($"{PersonApi}nm00000019999");
+            var deletePerson = new
+            {
+                personId = "nm00000019999"
+            };
+
+            var (data, statusCode) = DeleteData(PersonApi + "remove", deletePerson);
 
             Assert.Equal(HttpStatusCode.OK, statusCode);
-            Assert.Equal("Deleted User!", data["message"]);
+            Assert.Equal("removed", data["message"]);
 
         }
 
+        /*
         [Fact]
         public void ApiPerson_UpdatePerson()
         {
@@ -104,6 +112,7 @@ namespace IMDBdataserviceTest
             Assert.Equal("Deleted User!", data["message"]);
 
         }
+        */
 
         //Helpers *------------------------------------------------------------------------*
 
@@ -127,9 +136,13 @@ namespace IMDBdataserviceTest
             return ((JObject)JsonConvert.DeserializeObject(data), response.StatusCode);
         }
 
-        (JObject, HttpStatusCode) DeleteData(string url)
+        (JObject, HttpStatusCode) DeleteData(string url, object content)
         {
             var client = new HttpClient();
+            var requestContent = new StringContent(
+                JsonConvert.SerializeObject(content),
+                Encoding.UTF8,
+                "application/json");
             var response = client.DeleteAsync(url).Result;
             var data = response.Content.ReadAsStringAsync().Result;
             return ((JObject)JsonConvert.DeserializeObject(data), response.StatusCode);

@@ -40,17 +40,17 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("remove")]
-        public IActionResult RemovePerson([FromBody] Person p)
+        [HttpDelete]
+        [Route("remove/{person}")]
+        public IActionResult RemovePerson(string personId)
         {
-            if (_dataService.RemovePerson(p))
+            if (_dataService.RemovePerson(personId))
             {
-                return Ok("removed");
+                return Ok("\"{\"message\":\"removed person\"}\""); //"{"message":"removed person"}"
             }
             else
             {
-                return BadRequest("Already removed");
+                return BadRequest(new { Data = "Already removed" });
             }
         }
 
