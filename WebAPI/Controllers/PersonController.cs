@@ -7,32 +7,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IMDBdataservice;
 using IMDBdataservice.Service;
+using WebServiceToken.Models;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonController : ControllerBase
+    public class PersonController : ControllerBase, IOurcontroller<Person>
     {
         IbaseService _dataService;
+        LinkGenerator _linkGenerator;
 
-        //My functions
+        public PersonController(ILogger<PersonController> logger, IbaseService dataService, LinkGenerator linkGenerator)
+        {
+            _dataService = dataService;
+            _linkGenerator = linkGenerator;
+        }
+
         [HttpPost]
-        [Route("add/person")]
+        [Route("add")]
         public IActionResult AddPerson([FromBody] Person p)
         {
             if (_dataService.AddPerson(p))
             {
-                return Ok("inserted");
+                return CreatedAtRoute(null, p);
             }
             else
             {
-                return BadRequest("Already exists");
+                return BadRequest(new{Data = "not Created"});
             }
         }
 
         [HttpPost]
-        [Route("remove/person")]
+        [Route("remove")]
         public IActionResult RemovePerson([FromBody] Person p)
         {
             if (_dataService.RemovePerson(p))
@@ -46,7 +55,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost] // TODO: Add More error handling
-        [Route("bookmark/person")]
+        [Route("bookmark")]
         public IActionResult BookmarkPerson([FromBody] BookmarkPerson bp)
         {
             if (_dataService.BookmarkPerson(bp))
@@ -60,7 +69,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("search/person")] //Weird route aagain
+        [Route("search")] //Weird route aagain
         public IActionResult SearchPersons([FromBody] Person person, [FromQuery] IMDBdataservice.QueryString queryString)
         {
             var result = _dataService.SearchPersons(person, queryString);
@@ -72,7 +81,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("person/{id}")] //Route is weird, make person controller?
+        [Route("{id}")] //Route is weird, make person controller?
         public IActionResult GetPerson(string id)
         {
             var title = _dataService.GetPerson(id);
@@ -86,7 +95,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        [Route("person/{id}")]
+        [Route("{id}")]
         public IActionResult UpdatePerson(string id, [FromBody] PersonDTO person)
         {
             person.PersonId = id;
@@ -96,6 +105,32 @@ namespace WebAPI.Controllers
             }
             return Ok(_dataService.UpdatePerson(person));
 
+        }
+
+        [HttpGet]
+        [Route("freq")]
+        public IActionResult GetMostFrequentPerson([FromQuery] IMDBdataservice.QueryString queryString)
+        {
+            var result = _dataService.GetMostFrequentPerson(queryString);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result.Select(cc));
+        }
+
+        private Freq cc(Person person)
+        {
+            return new Freq
+            {
+                name = person.PersonName
+            };
+        }
+
+        public string GetUrl(Person obj)
+        {
+            throw new NotImplementedException();
         }
 
         #region automatic controllers

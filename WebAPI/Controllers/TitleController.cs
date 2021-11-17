@@ -78,43 +78,19 @@ namespace WebAPI.Controllers
         {
             try
             {
-
-            
-            var history = _dataService.GetSearchHistory();
+                var history = _dataService.GetSearchHistory();
        
-            if (history == null)
-            {
-                return NotFound();
-            }
+                if (history == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(history);
+                return Ok(history);
             }
             catch
             {
                 return Unauthorized();
             }
-
-        }
-
-        [HttpGet]
-        [Route("freq")]
-        public IActionResult amazing([FromQuery] QueryString queryString)
-        {
-            var result = _dataService.GetMostFrequentPerson(queryString);
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result.Select(cc));
-        }
-
-        private Freq cc(Person person)
-        {
-            return new Freq
-            {
-                name = person.PersonName
-            };
         }
 
         [HttpGet]
@@ -186,20 +162,6 @@ namespace WebAPI.Controllers
                 return BadRequest("Id does not exits");
             }
             return Ok(_dataService.UpdateTitle(title));
-
-        }
-
-
-        [HttpPut]
-        [Route("person/{id}")]
-        public IActionResult UpdatePerson(string id, [FromBody] PersonDTO person)
-        {
-            person.PersonId = id;
-            if (!_dataService.GetImdbContext().People.Any(x => x.PersonId == id))
-            {
-                return BadRequest("Id does not exits");
-            }
-            return Ok(_dataService.UpdatePerson(person));
 
         }
 
