@@ -15,9 +15,7 @@ namespace WebAPI.Controllers
 
         public PageLinkBuilder(IUrlHelper url, string route, object extraValues, int pageNum, int pageSize, long total)
         {
-            Console.WriteLine(total);
-            Console.WriteLine(pageNum);
-            // Determine total number of pages
+            //total number of pages
             var pageCount = total > 0
                 ? (int)Math.Ceiling(total / (double)pageSize)
                 : 0;

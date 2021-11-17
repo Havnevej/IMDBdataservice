@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("search")] //Weird route aagain
+        [Route("search")]
         public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryStringOur queryString)
         {
             var result = _dataService.SearchPersons(person, queryString);
@@ -81,7 +81,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")] //Route is weird, make person controller?
+        [Route("{id}")] 
         public IActionResult GetPerson(string id)
         {
             var title = _dataService.GetPerson(id);

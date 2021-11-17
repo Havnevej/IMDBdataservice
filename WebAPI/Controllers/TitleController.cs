@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using AutoMapper;
 
 namespace WebAPI.Controllers
 {
@@ -22,11 +23,29 @@ namespace WebAPI.Controllers
     {
         IbaseService _dataService;
         LinkGenerator _linkGenerator;
+        static readonly MapperConfiguration configSingle = new MapperConfiguration(cfg => {
+            cfg.CreateMap<Title, TitleDTO> ().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+        });
+        MapperConfiguration configMulti = new MapperConfiguration(cfg => cfg.CreateMap<Title, TitleDTO>());
+        static Mapper mapper;
+
+        private List<TitleDTO> ConvertToTitleDto(List<Title> input)
+        {
+            mapper = new(configMulti);
+            List<TitleDTO> titles = mapper.Map<List<TitleDTO>>(input);
+            foreach (var item in titles)
+            {
+                
+                item.href = Url.RouteUrl("").ToString()+$"/{item.TitleId}";
+            }
+            return titles;
+        }
         public TitleController(ILogger<TitleController> logger, IbaseService dataService, LinkGenerator linkGenerator)
         {
             _dataService = dataService;
             _linkGenerator = linkGenerator;
         }
+
 
         [HttpGet("{id}", Name = nameof(GetTitle))]
         public IActionResult GetTitle(string id)
@@ -42,19 +61,22 @@ namespace WebAPI.Controllers
         }
         
         [HttpGet]
-        public IActionResult GetTitles([FromQuery] QueryStringOur queryString) //not implemented ?depth=100&?page=2 example
-        { //temp, needs to be in parameter
-            var title = _dataService.GetTopTitles(queryString);
+        public IActionResult GetTitles([FromQuery] QueryStringOur queryString)
+        { 
+            var title = _dataService.GetTopTitles(queryString).Result;
+
 
             if (title == null)
             {
                 return NotFound();
             }
+            
+            
 
             long total = _dataService.GetImdbContext().Titles.Count();
             var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
             
-            return Ok(new {title.Result, Paging = linkBuilder });
+            return Ok(new {Data=ConvertToTitleDto(title), Paging = linkBuilder });
         }
         
         [HttpGet]
