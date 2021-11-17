@@ -41,8 +41,6 @@ namespace WebAPI.Controllers
         [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryStringOur queryString) //not implemented ?depth=100&?page=2 example
         { //temp, needs to be in parameter
- 
-
             var title = _dataService.GetTopTitles(queryString);
 
             if (title == null)
@@ -77,13 +75,10 @@ namespace WebAPI.Controllers
         [Route("gethist")]
         public IActionResult Get__search_history([FromQuery] QueryStringOur queryString)
         {
-            
-            
-            Console.WriteLine("123");
-            var username = HttpContext.Items["User"].ToString();
-            Console.WriteLine(username);
-            Console.WriteLine("123");
-            var history = _dataService.GetSearchHistory(username, queryString);
+            // var username = HttpContext.Items["User"].ToString();
+            User user = (User)HttpContext.Items["User"];
+            Console.WriteLine("Username: " + user.Username);
+            var history = _dataService.GetSearchHistory(user.Username, queryString);
        
             if (history == null)
             {

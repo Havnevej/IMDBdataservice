@@ -40,7 +40,6 @@ namespace WebServiceToken.Middleware
             {
                 var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
                 var key = Encoding.UTF8.GetBytes(_configuration.GetSection("Auth:Secret").Value);
-
                 var tokenHandler = new JwtSecurityTokenHandler();
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
@@ -50,12 +49,10 @@ namespace WebServiceToken.Middleware
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 }, out var validatedToken);
-
                 var jwtToken = validatedToken as JwtSecurityToken;
-                var claim = jwtToken.Claims.FirstOrDefault(x => x.Type == "id");
+                var claim = jwtToken.Claims.FirstOrDefault(x => x.Type == "for_user");
                 if (claim != null)
                 {
-                    //int.TryParse(claim.Value.ToString(), out var id);
                     var id = claim.Value;
                     context.Items["User"] = _dataService.GetUser(id);
                 }
