@@ -23,36 +23,65 @@ namespace IMDBdataserviceTest
         {
             var newuser = new
             {
-                userid = "register_name6767",
                 username = "testing_register6767",
                 password = "amazing1234"
             };
             var (users, statusCode) = PostData(UserApi + "register", newuser);
 
             Assert.Equal(HttpStatusCode.Created, statusCode);
-            //Assert.Equal(HttpStatusCode.OK, statusCode);
-            //get test 
+           
 
         }
 
         [Fact]
         public void ApiUser_getuser()
         {
-            var (user, statusCode) = GetObject($"{UserApi}register_name6767");
+            var (user, statusCode) = GetObject($"{UserApi+ "get"}/testing_register6767");
 
             Assert.Equal(HttpStatusCode.OK, statusCode);
-            Assert.Equal("testing_register6767", user["name"]);
+            Assert.Equal("testing_register6767", user["username"]);
         }
 
+        [Fact]
+        public void ApiUser_login()
+        {
+            var user_info = new
+            {
+                username = "testing_register6767",
+                password = "amazing1234"
+            };
+            var (data, statusCode) = PostData($"{UserApi + "login"}", user_info);
+
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+            Assert.NotNull(data["token"]);
+        }
 
         [Fact]
         public void ApiUser_DeleteUser()
         {
-            var (data, statusCode) = DeleteData($"{UserApi}testing_register6767");
+            var user_info = new
+            {
+                username = "testing_register6767",
+                password = "amazing1234"
+            };
 
-            Assert.Equal(HttpStatusCode.OK, statusCode);
-            Assert.Equal("Deleted User!", data["message"]);
+            var (data, statusCode) = PostData($"{UserApi + "login"}", user_info);
+            var token = data["token"];
 
+            using (var client = new HttpClient())
+            {
+                var url = $"{UserApi + "delete"}";
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+                
+                var requestContent = new StringContent(
+                JsonConvert.SerializeObject(new {username = user_info.username}),
+                Encoding.UTF8,
+                "application/json");
+                var response = client.PostAsync(url, requestContent).Result;
+                var return_data = response.Content.ReadAsStringAsync().Result;
+                var parsed_data = (JObject)JsonConvert.DeserializeObject(return_data);
+                Assert.Equal("Deleted User!", parsed_data["message"]);
+            }
         }
 
 
@@ -66,6 +95,7 @@ namespace IMDBdataserviceTest
             var response = client.PostAsync(url, requestContent).Result;
             var data = response.Content.ReadAsStringAsync().Result;
             return ((JObject)JsonConvert.DeserializeObject(data), response.StatusCode);
+
         }
 
         (JObject, HttpStatusCode) GetObject(string url)
