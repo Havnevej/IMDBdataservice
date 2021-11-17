@@ -179,7 +179,8 @@ namespace IMDBdataservice.Service
                 UserId = ctx.Users.Max(x => x.UserId) + 1,
                 Username = username,
                 Password = password,
-                Salt = salt
+                Salt = salt,
+                CreatedDate = DateTime.Now
             };
             ctx.Add(user);
             ctx.SaveChanges();
