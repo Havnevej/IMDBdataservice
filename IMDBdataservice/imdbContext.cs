@@ -330,7 +330,7 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<SearchHistory>(entity =>
             {
-                entity.HasKey(e => new { e.Username, e.Date })
+                entity.HasKey(e => new { e.Username, e.SearchDate })
                     .HasName("search_history_pkey");
 
                 entity.ToTable("search_history");
@@ -339,9 +339,9 @@ namespace IMDBdataservice
                     .HasMaxLength(255)
                     .HasColumnName("username");
 
-                entity.Property(e => e.Date)
+                entity.Property(e => e.SearchDate)
                     .HasMaxLength(255)
-                    .HasColumnName("date");
+                    .HasColumnName("timestamp");
 
                 entity.Property(e => e.SearchString)
                     .HasMaxLength(255)
