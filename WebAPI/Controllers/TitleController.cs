@@ -114,8 +114,8 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("search/primary")]
-        public IActionResult SearchTitles([FromBody] Title title,[FromQuery] QueryStringOur queryString) {
-            var result = _dataService.SearchTitles(title, queryString);
+        public IActionResult SearchTitles([FromQuery] QueryStringOur queryString) {
+            var result = _dataService.SearchTitles(queryString);
             if (result.Count == 0)
             {
                 return Ok("{\"message\":\"No results found\"}");

@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("search/person")] //Weird route aagain
-        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] IMDBdataservice.QueryString queryString)
+        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] IMDBdataservice.QueryStringOur queryString)
         {
             var result = _dataService.SearchPersons(person, queryString);
             if (result.Count == 0)
