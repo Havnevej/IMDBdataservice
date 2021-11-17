@@ -12,6 +12,7 @@ using WebServiceToken.Models;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace WebAPI.Controllers
 {
@@ -60,14 +61,27 @@ namespace WebAPI.Controllers
         [Route("search")]
         public IActionResult SearchTitleByGenre([FromQuery] QueryStringOur queryString)
         {
-            var genre = _dataService.SearchTitleByGenre(queryString);
-            if (genre == null)
+            List<Title> result = new();
+            long total = 0;
+            if (queryString.Genre == null)
+            {
+                result = _dataService.SearchTitles(queryString);
+                total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).
+                    Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
+            } else {
+                result = _dataService.SearchTitleByGenre(queryString).Result;
+                total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).
+                    Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
+            }
+            
+            if (result.Count == 0)
             {
                 return NotFound();
             }
-            long total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
+            
             var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
-            DataWithPaging re = new(genre.Result, linkBuilder);
+            DataWithPaging re = new(result, linkBuilder);
+
             return Ok(re);
         }
 
@@ -112,16 +126,6 @@ namespace WebAPI.Controllers
             };
         }
 
-        [HttpGet]
-        [Route("search/primary")]
-        public IActionResult SearchTitles([FromQuery] QueryStringOur queryString) {
-            var result = _dataService.SearchTitles(queryString);
-            if (result.Count == 0)
-            {
-                return Ok("{\"message\":\"No results found\"}");
-            }
-            return Ok(result);
-        }
 
         [HttpPost]
         [Route("remove")]
