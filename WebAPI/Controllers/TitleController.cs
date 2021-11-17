@@ -9,6 +9,8 @@ using WebServiceToken.Attributes;
 using WebAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using WebServiceToken.Models;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Controllers
@@ -19,7 +21,6 @@ namespace WebAPI.Controllers
     {
         IbaseService _dataService;
         LinkGenerator _linkGenerator;
-
         public TitleController(ILogger<TitleController> logger, IbaseService dataService, LinkGenerator linkGenerator)
         {
             _dataService = dataService;
@@ -39,10 +40,8 @@ namespace WebAPI.Controllers
             return Ok(title);
         }
         [HttpGet]
-        public IActionResult GetTitles([FromQuery] QueryString queryString) //not implemented ?depth=100&?page=2 example
+        public IActionResult GetTitles([FromQuery] QueryStringOur queryString) //not implemented ?depth=100&?page=2 example
         { //temp, needs to be in parameter
-            Console.WriteLine(queryString.Genre);
-
             var title = _dataService.GetTopTitles(queryString);
 
             if (title == null)
@@ -59,7 +58,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("search")]
-        public IActionResult SearchTitleByGenre([FromQuery] QueryString queryString)
+        public IActionResult SearchTitleByGenre([FromQuery] QueryStringOur queryString)
         {
             var genre = _dataService.SearchTitleByGenre(queryString);
             if (genre == null)
@@ -71,16 +70,16 @@ namespace WebAPI.Controllers
             DataWithPaging re = new(genre.Result, linkBuilder);
             return Ok(re);
         }
+
         [Authorization]
         [HttpGet]
         [Route("gethist")]
-        public IActionResult Get__search_history()
+        public IActionResult Get__search_history([FromQuery] QueryStringOur queryString)
         {
-            try
-            {
-
-            
-            var history = _dataService.GetSearchHistory();
+            // var username = HttpContext.Items["User"].ToString();
+            User user = (User)HttpContext.Items["User"];
+            Console.WriteLine("Username: " + user.Username);
+            var history = _dataService.GetSearchHistory(user.Username, queryString);
        
             if (history == null)
             {
@@ -88,17 +87,13 @@ namespace WebAPI.Controllers
             }
 
             return Ok(history);
-            }
-            catch
-            {
-                return Unauthorized();
-            }
-
+         
+            
         }
 
         [HttpGet]
         [Route("freq")]
-        public IActionResult amazing([FromQuery] QueryString queryString)
+        public IActionResult amazing([FromQuery] QueryStringOur queryString)
         {
             var result = _dataService.GetMostFrequentPerson(queryString);
             if (result == null)
@@ -119,7 +114,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("search/primary")]
-        public IActionResult SearchTitles([FromBody] Title title,[FromQuery] QueryString queryString) {
+        public IActionResult SearchTitles([FromBody] Title title,[FromQuery] QueryStringOur queryString) {
             var result = _dataService.SearchTitles(title, queryString);
             if (result.Count == 0)
             {
@@ -212,7 +207,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("comments/{id}")] 
-        public IActionResult GetCommentsByTitleId(string id, [FromQuery] QueryString queryString)
+        public IActionResult GetCommentsByTitleId(string id, [FromQuery] QueryStringOur queryString)
         {
             var result = _dataService.GetCommentsByTitleId(id, queryString);
             if (result.Count == 0)
@@ -225,7 +220,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("search/person")] //Weird route aagain
-        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryString queryString)
+        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryStringOur queryString)
         {
             var result = _dataService.SearchPersons(person, queryString);
             if (result.Count == 0)
@@ -292,6 +287,22 @@ namespace WebAPI.Controllers
 
             return Ok(result);
         }
+
+
+
+        [HttpPost]
+        [Route("ratetitle")]
+        public IActionResult RateTitle([FromBody] UserTitleRating urt)
+        {
+            if (_dataService.RateTitle(urt))
+            {
+                return Ok(urt);
+            }
+            return BadRequest();
+
+
+        }
+
         string IOurcontroller<Title>.GetUrl(Title obj)
         {
             return _linkGenerator.GetUriByName(HttpContext, nameof(GetTitle), new { obj.TitleId });

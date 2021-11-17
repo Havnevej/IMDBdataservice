@@ -91,7 +91,7 @@ namespace WebServiceToken.Controllers
 
             var tokenDescription = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new [] { new Claim("id", user.UserId.ToString()) }),
+                Subject = new ClaimsIdentity(new [] { new Claim("for_user", user.Username.ToString()) }),
                 Expires = DateTime.Now.AddSeconds(45),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key), 
