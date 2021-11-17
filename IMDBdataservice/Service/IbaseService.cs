@@ -12,7 +12,7 @@ namespace IMDBdataservice.Service
         public bool AddTitle(Title title);
         public bool RemoveTitle(Title titleToBeRemoved);
         public bool UpdateTitle(TitleDTO title);
-        public List<Title> SearchTitles(Title title, QueryStringOur queryString);
+        public List<Title> SearchTitles(QueryStringOur queryString);
         public bool BookmarkTitle(BookmarkTitle bt);
         public object CommentTitle(Comment comment);
         public bool RateTitle(UserTitleRating urt);

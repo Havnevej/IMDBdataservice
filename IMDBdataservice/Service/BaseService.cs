@@ -21,12 +21,33 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public List<Title> SearchTitles(Title title, QueryStringOur queryString)
+        public List<Title> SearchTitles(QueryStringOur queryString)
         {
-            List<Title> orderList = new();
-            orderList = ctx.Titles.Where(x => x.PrimaryTitle.Contains(title.PrimaryTitle)).Skip(queryString.Page * queryString.PageSize)
+            List<Title> titleList = new();
+            titleList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(queryString.needle.ToLower()))
+                .Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToList();
-                return orderList;
+
+            //Add search to search history for user.
+            if(queryString.username == null)
+            {
+                Console.WriteLine("no username specified");
+            } 
+            else {
+                //check if username exists before adding to history
+                User u = ctx.Users.FirstOrDefault(x => x.Username.ToLower() == queryString.username.ToLower());
+                if ( u != null && u.Username.ToLower() == queryString.username.ToLower()){
+                    SearchHistory search = new()
+                    {
+                        Username = queryString.username,
+                        SearchString = queryString.needle,
+                        SearchDate = DateTime.Now                
+                    };
+                    ctx.Add(search);
+                    ctx.SaveChanges();
+                }
+            }
+            return titleList;
         }
         public Title GetTitle(string id)
         {
@@ -172,8 +193,7 @@ namespace IMDBdataservice.Service
         public List<SearchHistory> GetSearchHistory(string username, QueryStringOur queryString)
         {
             List<SearchHistory> result = new();
-            result = ctx.SearchHistories.Skip(queryString.Page * queryString.PageSize)
-                .Take(queryString.PageSize).ToList();
+            result = ctx.SearchHistories.Where(x => x.Username == username).Take(10).ToList();
             return result;
         }
 

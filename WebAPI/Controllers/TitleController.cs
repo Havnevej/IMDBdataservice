@@ -12,6 +12,7 @@ using WebServiceToken.Models;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace WebAPI.Controllers
 {
@@ -60,20 +61,31 @@ namespace WebAPI.Controllers
         [Route("search")]
         public IActionResult SearchTitleByGenre([FromQuery] QueryStringOur queryString)
         {
-            var genre = _dataService.SearchTitleByGenre(queryString);
-            if (genre == null)
+            List<Title> result = new();
+            long total = 0;
+            if (queryString.Genre == null)
+            {
+                result = _dataService.SearchTitles(queryString);
+                total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).
+                    Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
+            } else {
+                result = _dataService.SearchTitleByGenre(queryString).Result;
+                total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).
+                    Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
+            }
+            
+            if (result.Count == 0)
             {
                 return NotFound();
             }
-            long total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
-            var linkBuilder = new PageLinkBuilder(Url, "", new{genre=queryString.Genre}, queryString.Page, queryString.PageSize, total);
-            return Ok(new { genre.Result, Paging = linkBuilder });
+            var linkBuilder = new PageLinkBuilder(Url, "", new{genre=queryString.Genre,needle=queryString.needle}, queryString.Page, queryString.PageSize, total);
+            return Ok(new { result, Paging = linkBuilder });
         }
 
         [Authorization]
         [HttpGet]
-        [Route("gethist")]
-        public IActionResult Get__search_history([FromQuery] QueryStringOur queryString)
+        [Route("gethistory")]
+        public IActionResult GetSearchHistory([FromQuery] QueryStringOur queryString)
         {
             // var username = HttpContext.Items["User"].ToString();
             User user = (User)HttpContext.Items["User"];
@@ -88,16 +100,6 @@ namespace WebAPI.Controllers
                 return Ok(history);
         }
 
-        [HttpGet]
-        [Route("search/primary")]
-        public IActionResult SearchTitles([FromBody] Title title,[FromQuery] QueryStringOur queryString) {
-            var result = _dataService.SearchTitles(title, queryString);
-            if (result.Count == 0)
-            {
-                return Ok("{\"message\":\"No results found\"}");
-            }
-            return Ok(result);
-        }
 
         [HttpPost]
         [Route("remove")]
