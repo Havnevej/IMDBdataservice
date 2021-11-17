@@ -73,13 +73,13 @@ namespace WebAPI.Controllers
 
         [Authorization]
         [HttpGet]
-        [Route("gethist")]
-        public IActionResult Get__search_history([FromQuery] QueryStringOur queryString)
+        [Route("gethist/{username}")]
+        public IActionResult Get__search_history(string username, [FromQuery] QueryStringOur queryString)
         {
             // var username = HttpContext.Items["User"].ToString();
             User user = (User)HttpContext.Items["User"];
             Console.WriteLine("Username: " + user.Username);
-            var history = _dataService.GetSearchHistory(user.Username, queryString);
+            var history = _dataService.GetSearchHistory(username, queryString);
        
             if (history == null)
             {
