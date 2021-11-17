@@ -15,6 +15,8 @@ namespace IMDBdataserviceTest
     {
         private const string UserApi = "http://localhost:5001/api/users/";
         private const string TitleApi = "http://localhost:5001/api/titles";
+        private const string PersonApi = "http://localhost:5000/api/person/";
+
 
         /* /api/categories */
 
@@ -44,7 +46,6 @@ namespace IMDBdataserviceTest
             Assert.Equal("testing_register6767", user["name"]);
         }
 
-
         [Fact]
         public void ApiUser_DeleteUser()
         {
@@ -55,6 +56,56 @@ namespace IMDBdataserviceTest
 
         }
 
+        //Person Test *------------------------------------------------------------------------*
+
+        [Fact]
+        public void ApiPerson_AddPerson()
+        {
+            var newPerson = new
+            {
+                personId = "nm00000019999",
+                personName = "MickeyMouse",
+                birthyear = "1986",
+                deathyear = "1987"
+            };
+            var (person, statusCode) = PostData(PersonApi + "add", newPerson);
+
+            Assert.Equal(HttpStatusCode.Created, statusCode);
+            //Assert.Equal(HttpStatusCode.OK, statusCode);
+
+        }
+        
+        [Fact]
+        public void ApiPerson_getPerson()
+        {
+            var (person, statusCode) = GetObject($"{PersonApi}nm00000019999");
+
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+            Assert.Equal("MickeyMouse", person["personName"]);
+        }
+        
+
+        [Fact]
+        public void ApiUser_DeletePerson()
+        {
+            var (data, statusCode) = DeleteData($"{PersonApi}nm00000019999");
+
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+            Assert.Equal("Deleted User!", data["message"]);
+
+        }
+
+        [Fact]
+        public void ApiPerson_UpdatePerson()
+        {
+            var (data, statusCode) = DeleteData($"{UserApi}nm00000019999");
+
+            Assert.Equal(HttpStatusCode.OK, statusCode);
+            Assert.Equal("Deleted User!", data["message"]);
+
+        }
+
+        //Helpers *------------------------------------------------------------------------*
 
         (JObject, HttpStatusCode) PostData(string url, object content)
         {
@@ -83,7 +134,5 @@ namespace IMDBdataserviceTest
             var data = response.Content.ReadAsStringAsync().Result;
             return ((JObject)JsonConvert.DeserializeObject(data), response.StatusCode);
         }
-
-
     }
 }

@@ -92,6 +92,49 @@ namespace IMDBdataservice.Service
             return result;
         }
 
+        // Not implemented functions
+        public bool AddTitle(Title title) // still needs auto increment
+        {
+            if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId))
+            {
+
+                ctx.Add(title);
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
+        }
+        public bool UpdateTitle(TitleDTO title)
+        {
+            var dbTitle = GetTitle(title.TitleId);
+            if (dbTitle == null)
+            {
+                Console.WriteLine("hey");
+                return false;
+            }
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<TitleDTO, Title>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            });
+
+            var mapper = new Mapper(config);
+            dbTitle = mapper.Map<TitleDTO, Title>(title, dbTitle);
+
+            return ctx.SaveChanges() > 0;
+        }
+
+        public bool RemoveTitle(Title titleToBeRemoved)
+        {
+            if (ctx.Titles.ToList().Any(x => x.TitleId == titleToBeRemoved.TitleId))
+            {
+
+                var titleDelete = ctx.Titles.FirstOrDefault(x => x.TitleId == titleToBeRemoved.TitleId);
+                ctx.Titles.Remove(titleDelete);
+
+                return ctx.SaveChanges() > 0;
+            }
+            return false;
+        }
+
         /*
          * 
          * 
@@ -100,7 +143,33 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public List<SearchHistory> GetSearchHistory(string username, QueryStringOur queryString)
+
+        public User GetUser(string username)
+        {
+            User person = ctx.Users.FirstOrDefault(x => x.Username == username);
+            return person;
+        }
+
+        public void CreateUser(string username, string password = null, string salt = null)
+        {
+            User user = new()
+            {
+                UserId = ctx.Users.Max(x => x.UserId) + 1,
+                Username = username,
+                Password = password,
+                Salt = salt
+            };
+            ctx.Add(user);
+            ctx.SaveChanges();
+        }
+        public void DeleteUser(string username)
+        {
+            var user = ctx.Users.FirstOrDefault(x => x.Username == username);
+            ctx.Users.Remove(user);
+            ctx.SaveChanges();
+        }
+
+        public List<SearchHistory> GetSearchHistory()
         {
             List<SearchHistory> result = new();
             result = ctx.SearchHistories.Skip(queryString.Page * queryString.PageSize)
@@ -116,6 +185,7 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
+
         public bool BookmarkPerson(BookmarkPerson bp)
         {
             if (!ctx.BookmarkPeople.ToList().Any(x => x.Username == bp.Username && x.PersonId == bp.PersonId))
@@ -125,8 +195,6 @@ namespace IMDBdataservice.Service
             }
             return false;
         }
-
-
 
         public List<Person> GetMostFrequentPerson(QueryStringOur queryString) { //freq actor based on another actor and their work together. [GetMostFrequentCoWorker]
             List<Person> result = new();
@@ -166,34 +234,6 @@ namespace IMDBdataservice.Service
             var person = ctx.People.FirstOrDefault(x => x.PersonId == id);
             return person;
         }
-        // Not implemented functions
-        public bool AddTitle(Title title) // still needs auto increment
-        {
-            if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId)) {
-            
-                ctx.Add(title);
-                return ctx.SaveChanges() > 0;
-            }
-            return false;
-        }
-        public bool UpdateTitle(TitleDTO title)
-        {
-            var dbTitle = GetTitle(title.TitleId);
-            if (dbTitle == null)
-            {
-                Console.WriteLine("hey");
-                return false;
-            }
-
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<TitleDTO, Title>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
-            });
-            
-            var mapper = new Mapper(config);
-            dbTitle = mapper.Map<TitleDTO, Title>(title,dbTitle);
-
-            return ctx.SaveChanges() > 0;
-        }
 
         public bool AddPerson(Person person)
         {
@@ -225,19 +265,6 @@ namespace IMDBdataservice.Service
             return ctx.SaveChanges() > 0;
         }
 
-        public bool RemoveTitle(Title titleToBeRemoved)
-        {
-            if (ctx.Titles.ToList().Any(x => x.TitleId == titleToBeRemoved.TitleId))
-            {
-               
-                var titleDelete = ctx.Titles.FirstOrDefault(x=> x.TitleId == titleToBeRemoved.TitleId);
-                ctx.Titles.Remove(titleDelete);
-
-                return ctx.SaveChanges() > 0;
-            }
-            return false;
-        }
-
         public bool RemovePerson(Person personToBeRemoved)
         {
             if (ctx.People.ToList().Any(x => x.PersonId == personToBeRemoved.PersonId))
@@ -249,35 +276,6 @@ namespace IMDBdataservice.Service
             }
             return false;
         }
-
-
-        public User GetUser(string username)
-        {
-            User person = ctx.Users.FirstOrDefault(x => x.Username == username);
-            return person;
-        }
-
-        public void CreateUser(string username, string password = null, string salt = null)
-        {
-            long userid = ctx.Users.Max(x => x.UserId) + 1;
-            User user = new()
-            {
-                UserId = ctx.Users.Max(x=>x.UserId)+1,
-                Username = username,
-                Password = password,
-                Salt = salt,
-                CreatedDate = DateTime.Now
-            };
-            ctx.Add(user);
-            ctx.SaveChanges();
-        }
-        public void DeleteUser(string username)
-        {
-            var user = ctx.Users.FirstOrDefault(x => x.Username == username);
-            ctx.Users.Remove(user);
-            ctx.SaveChanges();
-        }
-
 
         #region functions todo
 
