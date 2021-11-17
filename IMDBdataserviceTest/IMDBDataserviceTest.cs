@@ -44,6 +44,7 @@ namespace IMDBdataserviceTest
             Assert.Equal("testing_register6767", user["username"]);
         }
 
+        /*
         [Fact]
         public void ApiUser_login()
         {
@@ -85,6 +86,7 @@ namespace IMDBdataserviceTest
                 Assert.Equal("Deleted User!", parsed_data["message"]);
             }
         }
+        */
 
         //Person Test *------------------------------------------------------------------------*
 
@@ -116,38 +118,57 @@ namespace IMDBdataserviceTest
         
 
         [Fact]
-        public void ApiUser_DeletePerson()
+        public void ApiUser_RemovePerson()
         {
-            var (data, statusCode) = DeleteData($"{PersonApi}nm00000019999");
+            var (data, statusCode) = DeleteData($"{PersonApi + "remove/nm00000019999"}");
 
             Assert.Equal(HttpStatusCode.OK, statusCode);
-            Assert.Equal("Deleted User!", data["message"]);
+            Assert.Equal("removed person", data["message"]);
 
         }
 
+        
         [Fact]
         public void ApiPerson_UpdatePerson()
         {
-            var (data, statusCode) = DeleteData($"{UserApi}nm00000019999");
+            var modifiedPerson = new
+            {
+                personId = "nm00000019999",
+                personName = "Minnie mouse",
+                birthyear = "1986",
+                deathyear = "1532326"
+            };
+            var (data, statusCode) = PostData($"{PersonApi}", modifiedPerson, "Put");
 
             Assert.Equal(HttpStatusCode.OK, statusCode);
-            Assert.Equal("Deleted User!", data["message"]);
+            Assert.Equal($"Updated person:{modifiedPerson.personId}", data["message"]);
 
         }
+        
 
         //Helpers *------------------------------------------------------------------------*
 
-        (JObject, HttpStatusCode) PostData(string url, object content)
+        (JObject, HttpStatusCode) PostData(string url, object content, string type="Post")
         {
             var client = new HttpClient();
             var requestContent = new StringContent(
                 JsonConvert.SerializeObject(content),
                 Encoding.UTF8,
                 "application/json");
-            var response = client.PostAsync(url, requestContent).Result;
-            var data = response.Content.ReadAsStringAsync().Result;
-            return ((JObject)JsonConvert.DeserializeObject(data), response.StatusCode);
 
+            if (type == "Post")
+            {
+                var response = client.PostAsync(url, requestContent).Result;
+                var data = response.Content.ReadAsStringAsync().Result;
+                return ((JObject)JsonConvert.DeserializeObject(data), response.StatusCode);
+            } else if(type == "Put")
+            {
+                var response = client.PutAsync(url, requestContent).Result;
+                var data = response.Content.ReadAsStringAsync().Result;
+                return ((JObject)JsonConvert.DeserializeObject(data), response.StatusCode);
+            } else {
+                return (null, HttpStatusCode.Conflict);
+            }
         }
 
         (JObject, HttpStatusCode) GetObject(string url)
