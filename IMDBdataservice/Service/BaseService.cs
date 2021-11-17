@@ -259,12 +259,14 @@ namespace IMDBdataservice.Service
 
         public void CreateUser(string username, string password = null, string salt = null)
         {
+            long userid = ctx.Users.Max(x => x.UserId) + 1;
             User user = new()
             {
                 UserId = ctx.Users.Max(x=>x.UserId)+1,
                 Username = username,
                 Password = password,
-                Salt = salt
+                Salt = salt,
+                CreatedDate = DateTime.Now
             };
             ctx.Add(user);
             ctx.SaveChanges();

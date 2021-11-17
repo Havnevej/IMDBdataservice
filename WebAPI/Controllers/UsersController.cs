@@ -118,5 +118,21 @@ namespace WebServiceToken.Controllers
             return Ok(new {message="Deleted User!"});
         }
 
+        
+        [HttpGet("get/{id}")]
+        public IActionResult Get(string id)
+        {
+
+            if (!_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == id))
+            {
+                return BadRequest();
+            }
+
+            var user = _dataService.GetUser(id);
+
+            return Ok(user);
+        }
+
+
     }
 }
