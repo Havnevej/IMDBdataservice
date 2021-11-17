@@ -41,12 +41,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("remove/{person}")]
+        [Route("remove/{personId}")]
         public IActionResult RemovePerson(string personId)
         {
             if (_dataService.RemovePerson(personId))
             {
-                return Ok("\"{\"message\":\"removed person\"}\""); //"{"message":"removed person"}"
+                return Ok("{\"message\":\"removed person\"}"); //"{"message":"removed person"}"
             }
             else
             {
@@ -95,15 +95,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
-        public IActionResult UpdatePerson(string id, [FromBody] PersonDTO person)
+        public IActionResult UpdatePerson([FromBody] PersonDTO person)
         {
-            person.PersonId = id;
-            if (!_dataService.GetImdbContext().People.Any(x => x.PersonId == id))
+            
+            if (!_dataService.GetImdbContext().People.Any(x => x.PersonId == person.PersonId))
             {
-                return BadRequest("Id does not exits");
+                return BadRequest(new { Message = $"Personid{person.PersonId} does not exits" });
             }
-            return Ok(_dataService.UpdatePerson(person));
+            if (_dataService.UpdatePerson(person))
+            {
+                return Ok(new { Message = $"Updated person:{person.PersonId}" });
+            }
+            return BadRequest(new { Message = $"unknown error", Data = person });
 
         }
 
