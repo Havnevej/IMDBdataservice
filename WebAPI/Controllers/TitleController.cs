@@ -39,6 +39,7 @@ namespace WebAPI.Controllers
 
             return Ok(title);
         }
+        
         [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryStringOur queryString) //not implemented ?depth=100&?page=2 example
         { //temp, needs to be in parameter
@@ -51,11 +52,10 @@ namespace WebAPI.Controllers
 
             long total = _dataService.GetImdbContext().Titles.Count();
             var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
-            DataWithPaging re = new(title.Result, linkBuilder);
-
-            return Ok(re);
+            
+            return Ok(new {title.Result, Paging = linkBuilder });
         }
-
+        
         [HttpGet]
         [Route("search")]
         public IActionResult SearchTitleByGenre([FromQuery] QueryStringOur queryString)
@@ -66,9 +66,8 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             long total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
-            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
-            DataWithPaging re = new(genre.Result, linkBuilder);
-            return Ok(re);
+            var linkBuilder = new PageLinkBuilder(Url, "", new{genre=queryString.Genre}, queryString.Page, queryString.PageSize, total);
+            return Ok(new { genre.Result, Paging = linkBuilder });
         }
 
         [Authorization]
