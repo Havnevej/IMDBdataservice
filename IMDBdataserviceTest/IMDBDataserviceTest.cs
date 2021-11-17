@@ -15,10 +15,8 @@ namespace IMDBdataserviceTest
     {
         private const string UserApi = "http://localhost:5001/api/users/";
         private const string TitleApi = "http://localhost:5001/api/titles";
-        private const string PersonApi = "http://localhost:5000/api/person/";
+        private const string PersonApi = "http://localhost:5001/api/person/";
 
-
-        /* /api/categories */
 
         [Fact]
         public void ApiUser_register()
@@ -44,7 +42,7 @@ namespace IMDBdataserviceTest
             Assert.Equal("testing_register6767", user["username"]);
         }
 
-        /*
+        
         [Fact]
         public void ApiUser_login()
         {
@@ -86,7 +84,7 @@ namespace IMDBdataserviceTest
                 Assert.Equal("Deleted User!", parsed_data["message"]);
             }
         }
-        */
+        
 
         //Person Test *------------------------------------------------------------------------*
 
