@@ -210,25 +210,27 @@ namespace IMDBdataservice.Service
 
         public User GetUser(string id)
         {
-            User person = ctx.Users.FirstOrDefault(x => x.UserId == id);
+            User person = ctx.Users.FirstOrDefault(x => x.Username == id);
             return person;
         }
 
-        public void CreateUser(string userid, string username, string password = null, string salt = null)
+        public void CreateUser(string username, string password = null, string salt = null)
         {
+            long userid = ctx.Users.Max(x => x.UserId) + 1;
             User user = new()
             {
                 UserId = userid,
-                UserName = username,
+                Username = username,
                 Password = password,
-                Salt = salt
+                Salt = salt,
+                CreatedDate = DateTime.Now
             };
             ctx.Add(user);
             ctx.SaveChanges();
         }
         public void DeleteUser(string username)
         {
-            var user = ctx.Users.FirstOrDefault(x => x.UserName == username);
+            var user = ctx.Users.FirstOrDefault(x => x.Username == username);
             ctx.Users.Remove(user);
             ctx.SaveChanges();
         }
