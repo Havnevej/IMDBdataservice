@@ -28,14 +28,13 @@ namespace WebAPI.Controllers
         });
         MapperConfiguration configMulti = new MapperConfiguration(cfg => cfg.CreateMap<Title, TitleDTO>());
         static Mapper mapper;
-
+        
         private List<TitleDTO> ConvertToTitleDto(List<Title> input)
         {
             mapper = new(configMulti);
             List<TitleDTO> titles = mapper.Map<List<TitleDTO>>(input);
             foreach (var item in titles)
             {
-                
                 item.href = Url.RouteUrl("").ToString()+$"/{item.TitleId}";
             }
             return titles;
@@ -101,7 +100,7 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             var linkBuilder = new PageLinkBuilder(Url, "", new{genre=queryString.Genre,needle=queryString.needle}, queryString.Page, queryString.PageSize, total);
-            return Ok(new { result, Paging = linkBuilder });
+            return Ok(new { Data = ConvertToTitleDto(result), Paging = linkBuilder });
         }
 
         [Authorization]
@@ -119,7 +118,7 @@ namespace WebAPI.Controllers
                     return NotFound();
                 }
 
-                return Ok(history);
+                return Ok(history); // only 10, no paging
         }
 
 

@@ -32,10 +32,6 @@ namespace WebServiceToken.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromBody]User dto)
         {
-            /*if (_dataService.GetUser(dto.Username) != null)
-            {
-                return BadRequest();
-            }*/
             if (_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == dto.Username))
             {
                 return BadRequest();

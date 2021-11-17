@@ -10,6 +10,7 @@ using IMDBdataservice.Service;
 using WebServiceToken.Models;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace WebAPI.Controllers
 {
@@ -19,11 +20,22 @@ namespace WebAPI.Controllers
     {
         IbaseService _dataService;
         LinkGenerator _linkGenerator;
-
+        MapperConfiguration config = new MapperConfiguration(cfg => cfg.CreateMap<Person, PersonDTO>());
+        static Mapper mapper;
         public PersonController(ILogger<PersonController> logger, IbaseService dataService, LinkGenerator linkGenerator)
         {
             _dataService = dataService;
             _linkGenerator = linkGenerator;
+        }
+        private List<PersonDTO> ConvertToPersonDto(List<Person> input)
+        {
+            mapper = new(config);
+            List<PersonDTO> persons = mapper.Map<List<PersonDTO>>(input);
+            foreach (var item in persons)
+            {
+                item.href = Url.RouteUrl("").ToString() + $"/{item.PersonId}";
+            }
+            return persons;
         }
 
         [HttpPost]
@@ -70,14 +82,18 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("search")]
-        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryStringOur queryString)
+        public IActionResult SearchPersons([FromQuery] QueryStringOur queryString)
         {
-            var result = _dataService.SearchPersons(person, queryString);
+            if(queryString.needle == null) { return BadRequest(new { Message = "No needle supplied, use ?needle=YourSearchString" }); }
+            var result = _dataService.SearchPersons(queryString);
             if (result.Count == 0)
             {
                 return Ok("{\"message\":\"No results found\"}");
             }
-            return Ok(result);
+            long total = _dataService.GetImdbContext().People.Where(x=>x.PersonName.ToLower().Contains(queryString.needle.ToLower())).Count();
+            var linkBuilder = new PageLinkBuilder(Url, "", new { queryString.needle }, queryString.Page, queryString.PageSize, total);
+
+            return Ok(new { Data=ConvertToPersonDto(result), Paging=linkBuilder});
         }
 
         [HttpGet]

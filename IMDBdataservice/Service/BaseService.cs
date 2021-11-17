@@ -244,10 +244,10 @@ namespace IMDBdataservice.Service
             return ss;
         }
 
-        public List<Person> SearchPersons(Person person, QueryStringOur queryString) // Done in controller
+        public List<Person> SearchPersons(QueryStringOur queryString) // Done in controller
         {
             List<Person> orderList = new();
-            orderList = ctx.People.Where(x => x.PersonName.Contains(person.PersonName)).Skip(queryString.Page * queryString.PageSize)
+            orderList = ctx.People.Where(x => x.PersonName.Contains(queryString.needle)).Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToList();
             return orderList;
         }

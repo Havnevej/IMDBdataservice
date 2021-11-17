@@ -13,6 +13,7 @@ namespace IMDBdataservice
             KnownForTitles = new HashSet<KnownForTitle>();
         }
 
+        public string href { get; set; }
         public string PersonId { get; set; }
         public string PersonName { get; set; }
         public string Birthyear { get; set; }

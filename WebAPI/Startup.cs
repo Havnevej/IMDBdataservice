@@ -31,13 +31,18 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             //services.AddScoped<IbaseService, BaseService>();
-            services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddControllers()
+                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve)
+                .AddJsonOptions(x => x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)
+                ;
+
+
             services.AddSingleton<IbaseService, BaseService>();
             services.AddAuthentication(sharedopt => sharedopt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme);
             services.AddAuthorization();
-
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
