@@ -126,8 +126,6 @@ namespace IMDBdataservice.Service
             List<SearchHistory> result = new();
             result = ctx.SearchHistories.Where(x => x.Username == username).Take(10).ToList();
             return result;
-            /*.Skip(queryString.Page * queryString.PageSize)
-                    .Take(queryString.PageSize).ToList();*/
         }
 
         /*
