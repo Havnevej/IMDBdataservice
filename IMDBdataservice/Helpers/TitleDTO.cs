@@ -5,14 +5,9 @@ using System.Collections.Generic;
 
 namespace IMDBdataservice
 {
-    public partial class TitleDTO
+    public class TitleDTO
     {
-        public TitleDTO()
-        {
-            Genres = new HashSet<Genre>();
-            KnownForTitles = new HashSet<KnownForTitle>();
-        }
-
+        public string href { get; set; }
         public string TitleId { get; set; }
         public string TitleType { get; set; }
         public string OriginalTitle { get; set; }
@@ -21,9 +16,6 @@ namespace IMDBdataservice
         public string StartYear { get; set; }
         public string EndYear { get; set; }
         public int? RunTimeMinutes { get; set; }
-
-        public virtual TitleRating TitleRating { get; set; }
-        public virtual ICollection<Genre> Genres { get; set; }
-        public virtual ICollection<KnownForTitle> KnownForTitles { get; set; }
+    
     }
 }
