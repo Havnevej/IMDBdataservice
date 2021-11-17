@@ -16,6 +16,7 @@ namespace IMDBdataservice
         public string StartYear { get; set; }
         public string EndYear { get; set; }
         public int? RunTimeMinutes { get; set; }
-    
+        public virtual ICollection<Genre> Genres { get; set; }
+
     }
 }

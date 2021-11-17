@@ -11,5 +11,8 @@ namespace IMDBdataservice
         public string Date { get; set; }
         public string TitleId { get; set; }
         public string Comment1 { get; set; }
+
+        public virtual Title Title { get; set; }
+        public virtual User UsernameNavigation { get; set; }
     }
 }

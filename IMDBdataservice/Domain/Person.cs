@@ -9,6 +9,7 @@ namespace IMDBdataservice
     {
         public Person()
         {
+            CharacterNames = new HashSet<CharacterName>();
             KnownForTitles = new HashSet<KnownForTitle>();
         }
 
@@ -17,6 +18,7 @@ namespace IMDBdataservice
         public string Birthyear { get; set; }
         public string Deathyear { get; set; }
 
+        public virtual ICollection<CharacterName> CharacterNames { get; set; }
         public virtual ICollection<KnownForTitle> KnownForTitles { get; set; }
     }
 }

@@ -9,8 +9,12 @@ namespace IMDBdataservice
     {
         public Title()
         {
+            BookmarkTitles = new HashSet<BookmarkTitle>();
+            CharacterNames = new HashSet<CharacterName>();
+            Comments = new HashSet<Comment>();
             Genres = new HashSet<Genre>();
             KnownForTitles = new HashSet<KnownForTitle>();
+            UserTitleRatings = new HashSet<UserTitleRating>();
         }
 
         public string TitleId { get; set; }
@@ -23,7 +27,11 @@ namespace IMDBdataservice
         public int? RunTimeMinutes { get; set; }
 
         public virtual TitleRating TitleRating { get; set; }
+        public virtual ICollection<BookmarkTitle> BookmarkTitles { get; set; }
+        public virtual ICollection<CharacterName> CharacterNames { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Genre> Genres { get; set; }
         public virtual ICollection<KnownForTitle> KnownForTitles { get; set; }
+        public virtual ICollection<UserTitleRating> UserTitleRatings { get; set; }
     }
 }

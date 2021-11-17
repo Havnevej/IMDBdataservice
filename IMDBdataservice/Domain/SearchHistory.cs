@@ -10,5 +10,7 @@ namespace IMDBdataservice
         public string Username { get; set; }
         public string SearchString { get; set; }
         public DateTime SearchDate { get; set; }
+
+        public virtual User UsernameNavigation { get; set; }
     }
 }

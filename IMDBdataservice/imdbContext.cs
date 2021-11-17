@@ -85,6 +85,12 @@ namespace IMDBdataservice
                 entity.Property(e => e.TitleId)
                     .HasMaxLength(255)
                     .HasColumnName("title_id");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.BookmarkTitles)
+                    .HasForeignKey(d => d.TitleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("title_fk");
             });
 
             modelBuilder.Entity<CharacterName>(entity =>
@@ -105,6 +111,18 @@ namespace IMDBdataservice
                 entity.Property(e => e.CharacterName1)
                     .HasMaxLength(555)
                     .HasColumnName("character_name");
+
+                entity.HasOne(d => d.Person)
+                    .WithMany(p => p.CharacterNames)
+                    .HasForeignKey(d => d.PersonId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("person_fk");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.CharacterNames)
+                    .HasForeignKey(d => d.TitleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("title_fk");
             });
 
             modelBuilder.Entity<Comment>(entity =>
@@ -129,6 +147,17 @@ namespace IMDBdataservice
                 entity.Property(e => e.TitleId)
                     .HasMaxLength(255)
                     .HasColumnName("title_id");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.TitleId)
+                    .HasConstraintName("title_fk");
+
+                entity.HasOne(d => d.UsernameNavigation)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(d => d.Username)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("username_fk");
             });
 
             modelBuilder.Entity<Director>(entity =>
@@ -339,13 +368,17 @@ namespace IMDBdataservice
                     .HasMaxLength(255)
                     .HasColumnName("username");
 
-                entity.Property(e => e.SearchDate)
-                    .HasMaxLength(255)
-                    .HasColumnName("timestamp");
+                entity.Property(e => e.SearchDate).HasColumnName("search_date");
 
                 entity.Property(e => e.SearchString)
                     .HasMaxLength(255)
                     .HasColumnName("search_string");
+
+                entity.HasOne(d => d.UsernameNavigation)
+                    .WithMany(p => p.SearchHistories)
+                    .HasForeignKey(d => d.Username)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("username_fk");
             });
 
             modelBuilder.Entity<Title>(entity =>
@@ -453,7 +486,7 @@ namespace IMDBdataservice
                 entity.ToTable("user");
 
                 entity.Property(e => e.Username)
-                    .HasMaxLength(255)
+                    .HasMaxLength(512)
                     .HasColumnName("username");
 
                 entity.Property(e => e.CreatedDate)
@@ -491,6 +524,12 @@ namespace IMDBdataservice
                 entity.Property(e => e.Rating)
                     .HasMaxLength(255)
                     .HasColumnName("rating");
+
+                entity.HasOne(d => d.Title)
+                    .WithMany(p => p.UserTitleRatings)
+                    .HasForeignKey(d => d.TitleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("title_fk");
             });
 
             modelBuilder.Entity<WordIndex>(entity =>
