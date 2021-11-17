@@ -5,6 +5,7 @@
 
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'IIS Express' " />
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
