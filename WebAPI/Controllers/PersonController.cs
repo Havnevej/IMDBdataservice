@@ -70,7 +70,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("search")] //Weird route aagain
-        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] IMDBdataservice.QueryString queryString)
+        public IActionResult SearchPersons([FromBody] Person person, [FromQuery] QueryStringOur queryString)
         {
             var result = _dataService.SearchPersons(person, queryString);
             if (result.Count == 0)
@@ -109,7 +109,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("freq")]
-        public IActionResult GetMostFrequentPerson([FromQuery] IMDBdataservice.QueryString queryString)
+        public IActionResult GetMostFrequentPerson([FromQuery] QueryStringOur queryString)
         {
             var result = _dataService.GetMostFrequentPerson(queryString);
             if (result == null)

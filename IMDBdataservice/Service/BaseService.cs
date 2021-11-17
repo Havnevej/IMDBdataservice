@@ -169,7 +169,7 @@ namespace IMDBdataservice.Service
             ctx.SaveChanges();
         }
 
-        public List<SearchHistory> GetSearchHistory()
+        public List<SearchHistory> GetSearchHistory(string username, QueryStringOur queryString)
         {
             List<SearchHistory> result = new();
             result = ctx.SearchHistories.Skip(queryString.Page * queryString.PageSize)
