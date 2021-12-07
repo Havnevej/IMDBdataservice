@@ -57,7 +57,22 @@ namespace WebAPI.Controllers
 
             return Ok(title);
         }
-        
+
+        //Here
+        [HttpGet]
+        [Route("omdb/{id}")]
+        public IActionResult GetTitleOmdb(string id)
+        {
+            var titleOmdb = _dataService.GetTitleOmdb(id);
+            if (titleOmdb == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(titleOmdb);
+        }
+
+
         [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryStringOur queryString)
         { 
