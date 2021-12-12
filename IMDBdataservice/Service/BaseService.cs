@@ -54,13 +54,19 @@ namespace IMDBdataservice.Service
             var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
             return  title;
         }
+
+        public Omdb GetTitleOmdb(string id)
+        {
+            var omdb = ctx.Omdbs.FirstOrDefault(x => x.TitleId == id);
+            return omdb;
+        }
+
         public float GetRatingForTitle(string id)
         {
             var avg_rating = ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).FirstOrDefault().TitleRating.RatingAvg;
             return (float)avg_rating;
-
-
         }
+
         public bool BookmarkTitle(BookmarkTitle bt)
         {
             if (!ctx.BookmarkTitles.ToList().Any(x => x.Username == bt.Username && x.TitleId == bt.TitleId))

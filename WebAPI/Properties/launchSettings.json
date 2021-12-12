@@ -14,8 +14,7 @@
       "launchUrl": "api/titles/tt0118206",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:5001"
+      }
     },
     "WebAPI": {
       "commandName": "Project",
