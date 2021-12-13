@@ -39,5 +39,6 @@ namespace IMDBdataservice
         public virtual ICollection<Genre> Genres { get; set; }
         public virtual ICollection<KnownForTitle> KnownForTitles { get; set; }
         public virtual ICollection<UserTitleRating> UserTitleRatings { get; set; }
+        public virtual Omdb Omdb { get; set; }
     }
 }
