@@ -51,16 +51,20 @@ namespace IMDBdataservice.Service
         }
         public Title GetTitle(string id)
         {
-            var title = ctx.Titles.FirstOrDefault(x => x.TitleId == id);
+            var title = ctx.Titles.
+                Include(g => g.Genres).
+                Include(x => x.omdb).
+                Include(xx => xx.director.person).
+                FirstOrDefault(x => x.TitleId == id);
             return  title;
         }
 
-        public Omdb GetTitleOmdb(string id)
+        public List<Principal> GetPrincipal(string id) //get stars
         {
-            var omdb = ctx.Omdbs.FirstOrDefault(x => x.TitleId == id);
-            return omdb;
+            var principal = ctx.Principals.Include(x => x.person).
+                Where(x => x.TitleId == id && (x.Category == "actor" || x.Category == "actress")).ToList();
+            return principal;
         }
-
         public float GetRatingForTitle(string id)
         {
             var avg_rating = ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).FirstOrDefault().TitleRating.RatingAvg;
@@ -114,10 +118,8 @@ namespace IMDBdataservice.Service
         public async Task<List<Title>> GetTopTitles(QueryStringOur queryString)
         { //works but too many top movies with rating 10*
             List<Title> result = new();
-            // Where(x => x.Omdb.Poster != "N/A") is only for the front end
-            result = ctx.Titles.Include(x=>x.Genres).Include(x => x.TitleRating).Include(x => x.Omdb).Where(x => x.Omdb.Poster != "N/A").OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
+            result = ctx.Titles.Include(x=>x.Genres).Include(x => x.TitleRating).Include(x => x.omdb).OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToListAsync().Result;
-            
             return result;
         }
 

@@ -58,20 +58,22 @@ namespace WebAPI.Controllers
             return Ok(title);
         }
 
-        //Here
+        
+
+
         [HttpGet]
-        [Route("omdb/{id}")]
-        public IActionResult GetTitleOmdb(string id)
+        [Route("stars")]
+        public IActionResult GetPrincipal([FromQuery] QueryStringOur queryString)
         {
-            var titleOmdb = _dataService.GetTitleOmdb(id);
-            if (titleOmdb == null)
+            var principal = _dataService.GetPrincipal(queryString.titleId);
+
+            if (principal == null)
             {
                 return NotFound();
             }
 
-            return Ok(titleOmdb);
+            return Ok(principal);
         }
-
 
         [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryStringOur queryString)
@@ -102,7 +104,8 @@ namespace WebAPI.Controllers
             {
                 result = _dataService.SearchTitles(queryString);
                 total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).
-                    Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
+                    Where(x => x.PrimaryTitle == queryString.PrimaryTitle).ToList().Count;
+                    //Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
             } else {
                 result = _dataService.SearchTitleByGenre(queryString).Result;
                 total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).

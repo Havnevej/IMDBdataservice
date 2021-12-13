@@ -30,6 +30,7 @@ namespace IMDBdataservice
         public string PrimaryTitle { get; set; }
         public string PersonName { get; set; }
 
+        public string titleId { get; set; }
 
     }
 }

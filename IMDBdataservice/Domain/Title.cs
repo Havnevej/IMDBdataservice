@@ -26,6 +26,12 @@ namespace IMDBdataservice
         public string EndYear { get; set; }
         public int? RunTimeMinutes { get; set; }
 
+        public Omdb omdb {get; set;}        
+ 
+        public Director director { get; set; }
+
+        public Principal principal { get; set; }
+
         public virtual TitleRating TitleRating { get; set; }
         public virtual ICollection<BookmarkTitle> BookmarkTitles { get; set; }
         public virtual ICollection<CharacterName> CharacterNames { get; set; }
