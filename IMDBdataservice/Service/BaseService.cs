@@ -181,11 +181,31 @@ namespace IMDBdataservice.Service
             return person;
         }
 
+        //public void CreateUser(string username, string password = null, string salt = null)
+        //{
+        //    User user = new()
+        //    {
+        //        UserId = ctx.Users.Max(x => x.UserId) + 1,
+        //        Username = username,
+        //        Password = password,
+        //        Salt = salt,
+        //        CreatedDate = DateTime.Now
+        //    };
+        //    ctx.Add(user);
+        //    ctx.SaveChanges();
+        //}
+
+
         public void CreateUser(string username, string password = null, string salt = null)
         {
+            long nextId;
+            if (ctx.Users.Count() == 0)
+                nextId = 1;
+            else nextId = ctx.Users.Max(x => x.UserId) + 1;
+
             User user = new()
             {
-                UserId = ctx.Users.Max(x => x.UserId) + 1,
+                UserId = nextId,
                 Username = username,
                 Password = password,
                 Salt = salt,
@@ -194,6 +214,8 @@ namespace IMDBdataservice.Service
             ctx.Add(user);
             ctx.SaveChanges();
         }
+
+
         public void DeleteUser(string username)
         {
             var user = ctx.Users.FirstOrDefault(x => x.Username == username);
