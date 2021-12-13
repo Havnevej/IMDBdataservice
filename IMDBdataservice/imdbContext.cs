@@ -162,12 +162,12 @@ namespace IMDBdataservice
 
             modelBuilder.Entity<Director>(entity =>
             {
-                entity.HasKey(e => new { e.DirectorId, e.TitleId })
+                entity.HasKey(e => new { e.PersonId, e.TitleId })
                     .HasName("director_pkey");
 
                 entity.ToTable("director");
 
-                entity.Property(e => e.DirectorId)
+                entity.Property(e => e.PersonId)
                     .HasMaxLength(255)
                     .HasColumnName("director_id");
 
@@ -317,7 +317,7 @@ namespace IMDBdataservice
             {
                 entity.HasKey(e => new { e.TitleId, e.Ordering })
                     .HasName("principals_pkey");
-
+                
                 entity.ToTable("principals");
 
                 entity.Property(e => e.TitleId)

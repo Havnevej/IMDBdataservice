@@ -12,5 +12,7 @@ namespace IMDBdataservice
         public string PersonId { get; set; }
         public string Category { get; set; }
         public string Job { get; set; }
+
+        public Person person { get; set; }
     }
 }
