@@ -18,13 +18,13 @@ namespace WebAPI.Controllers
     [ApiController]
     public class PersonController : ControllerBase, IOurcontroller<Person>
     {
-        IbaseService _dataService;
+        BaseService _dataService;
         LinkGenerator _linkGenerator;
         MapperConfiguration config = new MapperConfiguration(cfg => cfg.CreateMap<Person, PersonDTO>());
         static Mapper mapper;
-        public PersonController(ILogger<PersonController> logger, IbaseService dataService, LinkGenerator linkGenerator)
+        public PersonController(ILogger<PersonController> logger, LinkGenerator linkGenerator)
         {
-            _dataService = dataService;
+            _dataService = new BaseService();
             _linkGenerator = linkGenerator;
         }
         private List<PersonDTO> ConvertToPersonDto(List<Person> input)

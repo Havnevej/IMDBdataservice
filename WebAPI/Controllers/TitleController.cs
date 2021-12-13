@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
     [Route("api/titles")]
     public class TitleController : ControllerBase, IOurcontroller<Title>
     {
-        IbaseService _dataService;
+        BaseService _dataService;
         LinkGenerator _linkGenerator;
         static readonly MapperConfiguration configSingle = new MapperConfiguration(cfg => {
             cfg.CreateMap<Title, TitleDTO> ().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
@@ -38,9 +38,9 @@ namespace WebAPI.Controllers
             }
             return titles;
         }
-        public TitleController(ILogger<TitleController> logger, IbaseService dataService, LinkGenerator linkGenerator)
+        public TitleController(ILogger<TitleController> logger,  LinkGenerator linkGenerator)
         {
-            _dataService = dataService;
+            _dataService = new BaseService();
             _linkGenerator = linkGenerator;
         }
 
@@ -77,7 +77,7 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryStringOur queryString)
-        { 
+        {
             var title = _dataService.GetTopTitles(queryString).Result;
 
 
