@@ -9,9 +9,13 @@ namespace IMDBdataservice.Service
 {
     public class BaseService : IbaseService
     {
-        public static readonly imdbContext ctx = new();
+        public imdbContext ctx = new();
         public imdbContext GetImdbContext (){ return ctx; }
-
+        public static BaseService GetBaseService() { return new BaseService(); }
+        public BaseService()
+        {
+            ctx = new imdbContext();
+        }
 
         /*
          * 
