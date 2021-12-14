@@ -123,7 +123,7 @@ namespace IMDBdataservice.Service
         { //works but too many top movies with rating 10*
             List<Title> result = new();
             result = ctx.Titles.Include(x=>x.Genres).Include(x => x.TitleRating).Include(x => x.omdb).
-                Where(x => Convert.ToInt32(x.TitleRating.Votes) > 10000 && x.TitleType != "tvEpisode").
+                Where(x => Convert.ToInt32(x.TitleRating.Votes) > 1000000 && x.TitleType != "tvEpisode").
                 OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToListAsync().Result;
             return result;
