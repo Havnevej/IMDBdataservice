@@ -74,7 +74,11 @@ namespace IMDBdataservice.Service
             var avg_rating = ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).FirstOrDefault().TitleRating.RatingAvg;
             return (float)avg_rating;
         }
-
+        public List<BookmarkTitle> GetBookmarksForUser(string username) //get stars
+        {
+            List<BookmarkTitle> returns = ctx.BookmarkTitles.Where(x => x.Username == username).ToListAsync().Result;
+            return returns;
+        }
         public bool BookmarkTitle(BookmarkTitle bt)
         {
             if (!ctx.BookmarkTitles.ToList().Any(x => x.Username == bt.Username && x.TitleId == bt.TitleId))
@@ -185,6 +189,13 @@ namespace IMDBdataservice.Service
         {
             User person = ctx.Users.FirstOrDefault(x => x.Username == username);
             return person;
+        }
+        public List<Comment> GetCommentsByUser(string username, QueryStringOur queryString) // Done in controller
+        {
+            List<Comment> commentList = new();
+            commentList = ctx.Comments.Where(x => x.Username == username).Skip(0)
+                .Take(queryString.PageSize).ToList();
+            return commentList;
         }
 
         //public void CreateUser(string username, string password = null, string salt = null)

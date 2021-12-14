@@ -44,9 +44,7 @@ namespace WebAPI
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve)
                 .AddJsonOptions(x => x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)
                 ;
-
-
-            services.AddSingleton<IbaseService, BaseService>();
+            services.AddTransient<IbaseService, BaseService>();
             services.AddAuthentication(sharedopt => sharedopt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme);
             services.AddAuthorization();
             
@@ -61,7 +59,7 @@ namespace WebAPI
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseRouting();
 
             app.UseCors(x => x

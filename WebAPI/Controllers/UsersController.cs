@@ -34,14 +34,14 @@ namespace WebServiceToken.Controllers
         {
             if (_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == dto.Username))
             {
-                return BadRequest();
+                return BadRequest(new { ERROR = "user already exists", ERROR_TYPE = "BAD_DATA" });
             }
 
             int.TryParse(_configuration.GetSection("Auth:PasswordSize").Value, out int pwdSize);
 
             if (pwdSize == 0)
             {
-                return BadRequest("No password size");
+                return BadRequest(new { ERROR="No password size", ERROR_TYPE = "BAD_FORMAT" });
             }
 
             var salt = PasswordService.GenerateSalt(pwdSize);
@@ -49,7 +49,7 @@ namespace WebServiceToken.Controllers
 
             _dataService.CreateUser(dto.Username, pwd, salt);
 
-            return CreatedAtRoute(null, dto);
+            return CreatedAtRoute(null, new { created_user=dto.Username });
         }
 
         [HttpPost("login")]
@@ -58,27 +58,27 @@ namespace WebServiceToken.Controllers
             var user = _dataService.GetUser(dto.Username);
             if (user == null)
             {
-                return BadRequest();
+                return BadRequest(new { ERROR = "no user", ERROR_TYPE = "BAD_DATA" });
             }
 
             int.TryParse(_configuration.GetSection("Auth:PasswordSize").Value, out int pwdSize);
 
             if (pwdSize == 0)
             {
-                throw new ArgumentException("No password size");
+                throw new ArgumentException("No password size set in config");
             }
 
             string secret = _configuration.GetSection("Auth:Secret").Value;
             if (string.IsNullOrEmpty(secret))
             {
-                throw new ArgumentException("No secret");
+                throw new ArgumentException("No secret set in config");
             }
 
             var password = PasswordService.HashPassword(dto.Password, user.Salt, pwdSize);
 
             if (password != user.Password)
             {
-                return BadRequest();
+                return BadRequest( new {ERROR="username/password incorrect", ERROR_TYPE="BAD_DATA"});
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -106,7 +106,7 @@ namespace WebServiceToken.Controllers
             
             if (!_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == dto.Username))
             {
-                return BadRequest();
+                return StatusCode(405, new { ERROR = "not allowed", DESC = "cant get other users than yourself", ERROR_TYPE = "BAD_DATA" });
             }
 
             _dataService.DeleteUser(dto.Username);
@@ -114,17 +114,20 @@ namespace WebServiceToken.Controllers
             return Ok(new {message="Deleted User!"});
         }
 
-        
+        [Authorization]
         [HttpGet("get/{id}")]
         public IActionResult Get(string id)
         {
-
-            if (!_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == id))
+            User logged_in_user = (User)HttpContext.Items["User"];
+            var user_to_get = _dataService.GetImdbContext().Users.Find(id);
+            if (user_to_get == null || logged_in_user.Password != user_to_get.Password)
             {
-                return BadRequest();
+                return BadRequest(new { ERROR = "not allowed", ERROR_TYPE = "BAD_DATA" }); // Cant get users that are not yourself (logged in) or user doesnt exist.
             }
-
             var user = _dataService.GetUser(id);
+            user.BookmarkTitles = _dataService.GetBookmarksForUser(user.Username);
+            user.SearchHistories = _dataService.GetSearchHistory(user.Username, new QueryStringOur { });
+            user.Comments = _dataService.GetCommentsByUser(user.Username, new QueryStringOur { });
 
             return Ok(user);
         }
