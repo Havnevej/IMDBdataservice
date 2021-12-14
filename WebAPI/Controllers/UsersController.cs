@@ -20,12 +20,12 @@ namespace WebServiceToken.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IbaseService _dataService;
+        private readonly BaseService _dataService;
         private readonly IConfiguration _configuration;
 
-        public UsersController(IbaseService dataService, IConfiguration configuration)
+        public UsersController( IConfiguration configuration)
         {
-            _dataService = dataService;
+            _dataService = new BaseService();
             _configuration = configuration;
         }
 
