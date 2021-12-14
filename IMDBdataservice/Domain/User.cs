@@ -21,5 +21,6 @@ namespace IMDBdataservice
 
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<SearchHistory> SearchHistories { get; set; }
+        public virtual ICollection<BookmarkTitle> BookmarkTitles{ get; set; }
     }
 }

@@ -74,7 +74,11 @@ namespace IMDBdataservice.Service
             var avg_rating = ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).FirstOrDefault().TitleRating.RatingAvg;
             return (float)avg_rating;
         }
-
+        public List<BookmarkTitle> GetBookmarksForUser(string username) //get stars
+        {
+            List<BookmarkTitle> returns = ctx.BookmarkTitles.Where(x => x.Username == username).ToListAsync().Result;
+            return returns;
+        }
         public bool BookmarkTitle(BookmarkTitle bt)
         {
             if (!ctx.BookmarkTitles.ToList().Any(x => x.Username == bt.Username && x.TitleId == bt.TitleId))
