@@ -129,7 +129,7 @@ namespace IMDBdataservice.Service
             result = ctx.Titles.Include(x=>x.Genres).Include(x => x.TitleRating).Include(x => x.omdb).
                 Where(x => Convert.ToInt32(x.TitleRating.Votes) > 1000000 && x.TitleType != "tvEpisode").
                 OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
-                .Take(queryString.PageSize).ToListAsync().Result;
+                .Take(12).ToListAsync().Result; //queryString.PageSize
             return result;
         }
 
