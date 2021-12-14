@@ -190,6 +190,13 @@ namespace IMDBdataservice.Service
             User person = ctx.Users.FirstOrDefault(x => x.Username == username);
             return person;
         }
+        public List<Comment> GetCommentsByUser(string username, QueryStringOur queryString) // Done in controller
+        {
+            List<Comment> commentList = new();
+            commentList = ctx.Comments.Where(x => x.Username == username).Skip(0)
+                .Take(queryString.PageSize).ToList();
+            return commentList;
+        }
 
         //public void CreateUser(string username, string password = null, string salt = null)
         //{

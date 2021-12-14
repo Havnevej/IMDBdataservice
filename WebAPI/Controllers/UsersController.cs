@@ -119,12 +119,15 @@ namespace WebServiceToken.Controllers
         public IActionResult Get(string id)
         {
             User logged_in_user = (User)HttpContext.Items["User"];
-            if (!_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == id) || logged_in_user.Username != id)
+            var user_to_get = _dataService.GetImdbContext().Users.Find(id);
+            if (user_to_get == null || logged_in_user.Password != user_to_get.Password)
             {
                 return BadRequest(new { ERROR = "not allowed", ERROR_TYPE = "BAD_DATA" }); // Cant get users that are not yourself (logged in) or user doesnt exist.
             }
             var user = _dataService.GetUser(id);
             user.BookmarkTitles = _dataService.GetBookmarksForUser(user.Username);
+            user.SearchHistories = _dataService.GetSearchHistory(user.Username, new QueryStringOur { });
+            user.Comments = _dataService.GetCommentsByUser(user.Username, new QueryStringOur { });
 
             return Ok(user);
         }
