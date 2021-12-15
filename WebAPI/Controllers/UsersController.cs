@@ -126,6 +126,13 @@ namespace WebServiceToken.Controllers
             }
             var user = _dataService.GetUser(id);
             user.BookmarkTitles = _dataService.GetBookmarksForUser(user.Username);
+            Console.WriteLine(user.BookmarkTitles.Count);
+            foreach (var item in user.BookmarkTitles)
+            {
+                item.Title = new();
+                item.Title = _dataService.ctx.Titles.FirstOrDefault(title => title.TitleId == item.TitleId);
+                //item.Title = new _dataService.ctx.Titles.FirstOrDefault(title => title.TitleId == item.TitleId);
+            }
             user.SearchHistories = _dataService.GetSearchHistory(user.Username, new QueryStringOur { });
             user.Comments = _dataService.GetCommentsByUser(user.Username, new QueryStringOur { });
 
