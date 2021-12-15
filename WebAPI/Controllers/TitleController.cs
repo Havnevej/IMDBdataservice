@@ -166,11 +166,17 @@ namespace WebAPI.Controllers
                 return BadRequest("Already exists");
             }
         }
-
+        [Authorization]
         [HttpPost] // TODO: Add More error handling
         [Route("comments")] 
         public IActionResult CommentTitle([FromBody] Comment comment)
         {
+            if(comment.Comment1.Length > 10000) { return BadRequest(new { ERROR = "Too long", ERROR_TYPE = "BAD_DATA" }); }; //deny comments that are long
+            if(comment.TitleId == null) { return BadRequest(new { ERROR = "Invalid title id", ERROR_TYPE = "BAD_DATA" }); };
+            User user = (User)HttpContext.Items["User"];
+            comment.Username = user.Username;
+            comment.Date = DateTime.Now.ToString("dd/MMMM/yyyy HH:mm:ss");
+
             _dataService.CommentTitle(comment);
             return Ok();
         }
@@ -182,7 +188,7 @@ namespace WebAPI.Controllers
             var result = _dataService.GetCommentsByTitleId(id, queryString);
             if (result.Count == 0)
             {
-                return Ok("{\"message\":\"No comments\"}");
+                return BadRequest(new {ERROR="No comments for that id", ERROR_TYPE="BAD_DATA"});
             }
             return Ok(result);
         }
