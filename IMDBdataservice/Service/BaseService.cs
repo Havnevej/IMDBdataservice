@@ -120,6 +120,7 @@ namespace IMDBdataservice.Service
             return false;
 
         }
+
         public async Task<List<Title>> SearchTitleByGenre(QueryStringOur queryString)
         {
             List<Title> result = new();
@@ -203,8 +204,12 @@ namespace IMDBdataservice.Service
 
         public User GetUser(string username)
         {
-            User person = ctx.Users.FirstOrDefault(x => x.Username == username);
-            return person;
+            User user = ctx.Users.FirstOrDefault(x => x.Username == username);
+            if(user != null)
+            {
+                user.UserTitleRating = ctx.UserTitleRatings.Where(rating => rating.Username == username).ToListAsync().Result;
+            }
+            return user;
         }
         public List<Comment> GetCommentsByUser(string username, QueryStringOur queryString) // Done in controller
         {
