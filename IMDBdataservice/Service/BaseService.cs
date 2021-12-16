@@ -60,15 +60,12 @@ namespace IMDBdataservice.Service
                 Include(x => x.omdb).
                 Include(xx => xx.director.person).
                 FirstOrDefault(x => x.TitleId == id);
+            title.principal = ctx.Principals.Include(x => x.person).
+                Where(x => x.TitleId == id && (x.Category == "actor" || x.Category == "actress")).ToListAsync().Result;
             return  title;
         }
 
-        public List<Principal> GetPrincipal(string id) //get stars
-        {
-            var principal = ctx.Principals.Include(x => x.person).
-                Where(x => x.TitleId == id && (x.Category == "actor" || x.Category == "actress")).ToList();
-            return principal;
-        }
+        
         public float GetRatingForTitle(string id)
         {
             var avg_rating = ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).FirstOrDefault().TitleRating.RatingAvg;
