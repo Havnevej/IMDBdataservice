@@ -152,7 +152,8 @@ namespace WebAPI.Controllers
                 return BadRequest("Already removed");
             }
         }
-
+                    
+        [Authorization]
         [HttpPost] // TODO: Add More error handling
         [Route("bookmark/title")]
         public IActionResult BookmarkTitle([FromBody] BookmarkTitle bt) 
@@ -166,13 +167,19 @@ namespace WebAPI.Controllers
                 return BadRequest("Already exists");
             }
         }
-
+        [Authorization]
         [HttpPost] // TODO: Add More error handling
         [Route("comments")] 
         public IActionResult CommentTitle([FromBody] Comment comment)
         {
+            if(comment.Comment1.Length >= 1024) { return BadRequest(new { ERROR = "Too long", ERROR_TYPE = "BAD_DATA" }); }; //deny comments that are long
+            if(comment.TitleId == null || !_dataService.ctx.Titles.Any(t => t.TitleId == comment.TitleId)) { return BadRequest(new { ERROR = "Invalid title id", ERROR_TYPE = "BAD_DATA" }); };
+            User user = (User)HttpContext.Items["User"];
+            comment.Username = user.Username;
+            comment.Date = DateTime.Now.ToString("dd/MMMM/yyyy HH:mm:ss");
+
             _dataService.CommentTitle(comment);
-            return Ok();
+            return CreatedAtAction(nameof(GetCommentsByTitleId), new { id = comment.TitleId.ToString() },comment);
         }
 
         [HttpGet]
@@ -182,7 +189,7 @@ namespace WebAPI.Controllers
             var result = _dataService.GetCommentsByTitleId(id, queryString);
             if (result.Count == 0)
             {
-                return Ok("{\"message\":\"No comments\"}");
+                return BadRequest(new {ERROR="No comments for that id", ERROR_TYPE="BAD_DATA"});
             }
             return Ok(result);
         }
