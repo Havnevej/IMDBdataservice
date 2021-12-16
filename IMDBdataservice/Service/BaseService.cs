@@ -28,12 +28,21 @@ namespace IMDBdataservice.Service
         public List<Title> SearchTitles(QueryStringOur queryString)
         {
             List<Title> titleList = new();
-            titleList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(queryString.needle.ToLower()))
+            titleList = ctx.Titles.
+                Include(x => x.omdb).
+                Include(x => x.director.person).
+                Include(g => g.Genres).
+                Where(x => x.PrimaryTitle.ToLower().Contains(queryString.needle.ToLower()))
                 .Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToList();
+            titleList.ForEach(x =>
+            {
+                x.principal = ctx.Principals.Include(p => p.person).
+                Where(z => z.TitleId == x.TitleId).ToListAsync().Result;
+            });
 
             //Add search to search history for user.
-            if(queryString.username == null)
+            if (queryString.username == null)
             {
                 Console.WriteLine("no username specified");
             } 
