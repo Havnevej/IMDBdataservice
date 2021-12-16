@@ -121,6 +121,7 @@ namespace IMDBdataservice.Service
             return false;
 
         }
+
         public async Task<List<Title>> SearchTitleByGenre(QueryStringOur queryString)
         {
             List<Title> result = new();
@@ -138,13 +139,13 @@ namespace IMDBdataservice.Service
                 result = ctx.Titles.Include(x => x.Genres).Where(x => x.Genres.Any(genre=>genre.GenreName == queryString.Genre)).Include(x => x.TitleRating).Include(x => x.omdb).
                  Where(x => Convert.ToInt32(x.TitleRating.Votes) > 100000 && x.TitleType != "tvEpisode").
                  OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
-                 .Take(12).ToListAsync().Result; //queryString.PageSize
+                 .Take(queryString.PageSize).ToListAsync().Result; //queryString.PageSize
             } else
             {
                 result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Include(x => x.omdb).
                  Where(x => Convert.ToInt32(x.TitleRating.Votes) > 100000 && x.TitleType != "tvEpisode").
                  OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
-                 .Take(12).ToListAsync().Result; //queryString.PageSize
+                 .Take(queryString.PageSize).ToListAsync().Result; //queryString.PageSize
             }
  
             return result;
@@ -204,8 +205,12 @@ namespace IMDBdataservice.Service
 
         public User GetUser(string username)
         {
-            User person = ctx.Users.FirstOrDefault(x => x.Username == username);
-            return person;
+            User user = ctx.Users.FirstOrDefault(x => x.Username == username);
+            if(user != null)
+            {
+                user.UserTitleRating = ctx.UserTitleRatings.Where(rating => rating.Username == username).ToListAsync().Result;
+            }
+            return user;
         }
         public List<Comment> GetCommentsByUser(string username, QueryStringOur queryString) // Done in controller
         {
