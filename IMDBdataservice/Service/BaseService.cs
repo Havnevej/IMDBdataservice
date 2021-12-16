@@ -28,12 +28,21 @@ namespace IMDBdataservice.Service
         public List<Title> SearchTitles(QueryStringOur queryString)
         {
             List<Title> titleList = new();
-            titleList = ctx.Titles.Where(x => x.PrimaryTitle.ToLower().Contains(queryString.needle.ToLower()))
+            titleList = ctx.Titles.
+                Include(x => x.omdb).
+                Include(x => x.director.person).
+                Include(g => g.Genres).
+                Where(x => x.PrimaryTitle.ToLower().Contains(queryString.needle.ToLower()))
                 .Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToList();
+            titleList.ForEach(x =>
+            {
+                x.principal = ctx.Principals.Include(p => p.person).
+                Where(z => z.TitleId == x.TitleId).ToListAsync().Result;
+            });
 
             //Add search to search history for user.
-            if(queryString.username == null)
+            if (queryString.username == null)
             {
                 Console.WriteLine("no username specified");
             } 
@@ -60,15 +69,12 @@ namespace IMDBdataservice.Service
                 Include(x => x.omdb).
                 Include(xx => xx.director.person).
                 FirstOrDefault(x => x.TitleId == id);
+            title.principal = ctx.Principals.Include(x => x.person).
+                Where(x => x.TitleId == id && (x.Category == "actor" || x.Category == "actress")).ToListAsync().Result;
             return  title;
         }
 
-        public List<Principal> GetPrincipal(string id) //get stars
-        {
-            var principal = ctx.Principals.Include(x => x.person).
-                Where(x => x.TitleId == id && (x.Category == "actor" || x.Category == "actress")).ToList();
-            return principal;
-        }
+        
         public float GetRatingForTitle(string id)
         {
             var avg_rating = ctx.Titles.Include(x => x.TitleRating).Where(x => x.TitleId == id).FirstOrDefault().TitleRating.RatingAvg;

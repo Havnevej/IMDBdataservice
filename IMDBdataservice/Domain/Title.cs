@@ -30,7 +30,7 @@ namespace IMDBdataservice
  
         public Director director { get; set; }
 
-        public Principal principal { get; set; }
+        public virtual ICollection<Principal> principal { get; set; }
 
         public virtual TitleRating TitleRating { get; set; }
         public virtual ICollection<BookmarkTitle> BookmarkTitles { get; set; }
