@@ -32,6 +32,7 @@ namespace IMDBdataservice.Service
                 Include(x => x.omdb).
                 Include(x => x.director.person).
                 Include(g => g.Genres).
+                Include(r => r.TitleRating).
                 Where(x => x.PrimaryTitle.ToLower().Contains(queryString.needle.ToLower()))
                 .Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToList();
