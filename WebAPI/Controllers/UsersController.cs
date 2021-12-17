@@ -69,9 +69,10 @@ namespace WebServiceToken.Controllers
         public IActionResult Login(LoginDto dto)
         {
             var user = _dataService.GetUser(dto.Username);
+
             if (user == null)
             {
-                return BadRequest(new { ERROR = "no user", ERROR_TYPE = "BAD_DATA" });
+                return BadRequest(new { ERROR = "Username does not exist", ERROR_TYPE = "BAD_DATA" });
             }
 
             int.TryParse(_configuration.GetSection("Auth:PasswordSize").Value, out int pwdSize);
@@ -79,6 +80,11 @@ namespace WebServiceToken.Controllers
             if (pwdSize == 0)
             {
                 throw new ArgumentException("No password size set in config");
+            }
+
+            if (dto.Password == null)
+            {
+                return BadRequest(new { ERROR = "please enter a password", ERROR_TYPE = "BAD_DATA" });
             }
 
             string secret = _configuration.GetSection("Auth:Secret").Value;
@@ -110,7 +116,7 @@ namespace WebServiceToken.Controllers
             var securityToken = tokenHandler.CreateToken(tokenDescription);
             var token = tokenHandler.WriteToken(securityToken);
             
-            return Ok(new {dto.Username, token});
+            return Ok(new {dto.Username, token });
         }
         [Authorization]
         [HttpPost("delete")]
