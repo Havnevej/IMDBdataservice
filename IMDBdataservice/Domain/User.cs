@@ -11,6 +11,7 @@ namespace IMDBdataservice
         {
             Comments = new HashSet<Comment>();
             SearchHistories = new HashSet<SearchHistory>();
+            IsAdmin = false;
         }
 
         public long UserId { get; set; }
@@ -18,6 +19,7 @@ namespace IMDBdataservice
         public string Password { get; set; }
         public string Salt { get; set; }
         public DateTime CreatedDate { get; set; }
+        public bool? IsAdmin { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<SearchHistory> SearchHistories { get; set; }
