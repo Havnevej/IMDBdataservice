@@ -187,7 +187,7 @@ namespace WebAPI.Controllers
         {
             User user = (User)HttpContext.Items["User"];
             Console.WriteLine(user.IsAdmin);
-            if (user.IsAdmin == null)
+            if (user.IsAdmin == null || user.IsAdmin == false)
             {
                 return StatusCode(401, new { ERROR="Only admins can update titles", ERROR_TYPE="NOT_ALLOWED"});
             }
