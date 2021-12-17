@@ -210,7 +210,7 @@ namespace IMDBdataservice.Service
             User user = ctx.Users.FirstOrDefault(x => x.Username == username);
             if(user != null)
             {
-                user.UserTitleRating = ctx.UserTitleRatings.Where(rating => rating.Username == username).ToListAsync().Result;
+                user.UserTitleRating = ctx.UserTitleRatings.Where(rating => rating.Username == username).Include(title => title.Title).ToListAsync().Result;
             }
             return user;
         }

@@ -60,23 +60,51 @@ namespace WebAPI.Controllers
 
         
 
-        [HttpGet]
+        [HttpGet(Name = nameof(GetTitles))]
         public IActionResult GetTitles([FromQuery] QueryStringOur queryString)
         {
             var title = _dataService.GetTopTitles(queryString).Result;
 
+            //var numberOfProducts = _dataService.NumberOfTopTitles();
+
+            long total = _dataService.GetImdbContext().Titles.Count();
+
+            var pages = (int)Math.Ceiling((double)total / queryString.PageSize);
+
+
+            var prev = (string)null;
+            if (queryString.Page > 0)
+            {
+                prev = Url.Link(nameof(GetTitles), new QueryStringOur { Page = queryString.Page - 1, PageSize = queryString.PageSize});
+            }
+            var next = (string)null;
+            if (queryString.Page < pages - 1)
+            {
+                next = Url.Link(nameof(GetTitles), new QueryStringOur { Page = queryString.Page +1, PageSize = queryString.PageSize });
+            }
 
             if (title == null)
             {
                 return NotFound();
+            } else
+            {
+                var result = new
+                {
+                    pageSizes = new int[] { 10, 15, 20 },
+                    count = total,
+                    pages,
+                    prev,
+                    next,
+                    title
+                };
+                return Ok(result);
             }
             
+        
+            //long total = _dataService.GetImdbContext().Titles.Count();
+            //var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
             
-
-            long total = _dataService.GetImdbContext().Titles.Count();
-            var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
-            
-            return Ok(new {Data=ConvertToTitleDto(title), Paging = linkBuilder });
+            //return Ok(new {Data=ConvertToTitleDto(title), Paging = linkBuilder });
         }
         
         [HttpGet]
@@ -125,18 +153,26 @@ namespace WebAPI.Controllers
                 return Ok(history); // only 10, no paging
         }
 
-
+        [Authorization]
         [HttpPost]
         [Route("remove")]
         public IActionResult RemoveTitle([FromBody] Title t)
         {
-            if (_dataService.RemoveTitle(t))
+            User user = (User)HttpContext.Items["User"];
+            Console.WriteLine(user.IsAdmin);
+            if (user.IsAdmin == true)
             {
-                return Ok("removed");
-            }
-            else
+                if (_dataService.RemoveTitle(t))
+                {
+                    return Ok(new { REMOVED = t });
+                }
+                else
+                {
+                    return BadRequest(new { ERROR = "Could not remove", ERROR_TYPE = "UNKNOWN", DESC = t });
+                }
+            } else
             {
-                return BadRequest("Already removed");
+                return StatusCode(401, new { ERROR = "Only admins can delete titles", ERROR_TYPE = "NOT_ALLOWED" });
             }
         }
                     
@@ -180,17 +216,24 @@ namespace WebAPI.Controllers
             }
             return Ok(result);
         }
-
+        [Authorization]
         [HttpPut]
         [Route("{id}")]
         public IActionResult UpdateTitle(string id, [FromBody] TitleDTO title)
         {
+            User user = (User)HttpContext.Items["User"];
+            Console.WriteLine(user.IsAdmin);
+            if (user.IsAdmin == null || user.IsAdmin == false)
+            {
+                return StatusCode(401, new { ERROR="Only admins can update titles", ERROR_TYPE="NOT_ALLOWED"});
+            }
             title.TitleId = id;
             if (!_dataService.GetImdbContext().Titles.Any(x => x.TitleId == id))
             {
-                return BadRequest("Id does not exits");
+                return BadRequest(new { ERROR="title does not exist", ERROR_TYPE="NO_DATA"});
             }
-            return Ok(_dataService.UpdateTitle(title));
+            bool updated = _dataService.UpdateTitle(title);
+            return CreatedAtAction(nameof(GetTitle),new {id=title.TitleId},new {UPDATED_TITLE = updated});
 
         }
 

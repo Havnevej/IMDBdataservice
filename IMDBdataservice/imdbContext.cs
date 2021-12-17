@@ -503,6 +503,10 @@ namespace IMDBdataservice
                     .HasMaxLength(1024)
                     .HasColumnName("salt");
 
+                entity.Property(e => e.IsAdmin)
+                    .HasColumnName("is_admin")
+                    .HasDefaultValue(false);
+
                 entity.Property(e => e.UserId).HasColumnName("user_id");
             });
 
