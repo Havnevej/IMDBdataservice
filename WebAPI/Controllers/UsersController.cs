@@ -128,7 +128,7 @@ namespace WebServiceToken.Controllers
 
             _dataService.DeleteUser(dto.Username);
 
-            return Delete(dto);
+            return Ok(dto);
         }
 
         [Authorization]

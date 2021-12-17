@@ -125,18 +125,26 @@ namespace WebAPI.Controllers
                 return Ok(history); // only 10, no paging
         }
 
-
+        [Authorization]
         [HttpPost]
         [Route("remove")]
         public IActionResult RemoveTitle([FromBody] Title t)
         {
-            if (_dataService.RemoveTitle(t))
+            User user = (User)HttpContext.Items["User"];
+            Console.WriteLine(user.IsAdmin);
+            if (user.IsAdmin == true)
             {
-                return Ok("removed");
-            }
-            else
+                if (_dataService.RemoveTitle(t))
+                {
+                    return Ok(new { REMOVED = t });
+                }
+                else
+                {
+                    return BadRequest(new { ERROR = "Could not remove", ERROR_TYPE = "UNKNOWN", DESC = t });
+                }
+            } else
             {
-                return BadRequest("Already removed");
+                return StatusCode(401, new { ERROR = "Only admins can delete titles", ERROR_TYPE = "NOT_ALLOWED" });
             }
         }
                     
