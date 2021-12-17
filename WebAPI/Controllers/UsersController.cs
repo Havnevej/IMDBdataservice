@@ -31,38 +31,35 @@ namespace WebServiceToken.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody]User dto)
+        public IActionResult Register([FromBody] User dto)
         {
             //https://www.rhyous.com/2010/06/15/csharp-email-regular-expression/
             String theEmailPattern = @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
                                    + "@"
-                                   + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z";
+                                   + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z"; //email regex
             if (_dataService.GetImdbContext().Users.ToList().Any(x => x.Username == dto.Username))
             {
                 return BadRequest(new { ERROR = "user already exists", ERROR_TYPE = "BAD_DATA" });
             }
-
-            int.TryParse(_configuration.GetSection("Auth:PasswordSize").Value, out int pwdSize);
-            Console.WriteLine(dto.Password.Length + " " + pwdSize);
-            if (dto.Password.Length < 8 || dto.Password.Length > 100)
+            int.TryParse(_configuration.GetSection("Auth:PasswordSize").Value, out int pwdSize); //get the max password size to be set in the database
+            if (dto.Password.Length < 8 || dto.Password.Length > 100) // Password length check
             {
-                return BadRequest(new { ERROR="Password size invalid", ERROR_TYPE = "BAD_FORMAT" });
+                return BadRequest(new { ERROR = "Password size invalid", ERROR_TYPE = "BAD_FORMAT" });
             }
-            if (dto.Username.Length < 5 || dto.Username.Length >= pwdSize)
+            if (dto.Username.Length < 5 || dto.Username.Length >= pwdSize) // Username length check also matches the max size of the username in the database.
             {
                 return BadRequest(new { ERROR = "Invalid username size", ERROR_TYPE = "BAD_FORMAT" });
             }
-            if (!Regex.IsMatch(dto.Username, theEmailPattern))
+            if (!Regex.IsMatch(dto.Username, theEmailPattern)) //Email Pattern check
             {
                 return BadRequest(new { ERROR = "Invalid email", ERROR_TYPE = "BAD_FORMAT" });
-
             }
             var salt = PasswordService.GenerateSalt(pwdSize);
             var pwd = PasswordService.HashPassword(dto.Password, salt, pwdSize);
 
             _dataService.CreateUser(dto.Username, pwd, salt);
 
-            return CreatedAtRoute(null, new { created_user=dto.Username });
+            return CreatedAtAction(nameof(Get), new { id = dto.Username }, new { created_user = dto.Username });
         }
 
         [HttpPost("login")]
@@ -124,7 +121,7 @@ namespace WebServiceToken.Controllers
 
             _dataService.DeleteUser(dto.Username);
 
-            return Ok(new {message="Deleted User!"});
+            return Delete(dto);
         }
 
         [Authorization]
