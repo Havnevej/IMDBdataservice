@@ -43,7 +43,7 @@ namespace WebServiceToken.Controllers
             }
 
             int.TryParse(_configuration.GetSection("Auth:PasswordSize").Value, out int pwdSize);
-            if (dto.Password == null || dto.Password.Length < 8 || dto.Password.Length > 100)
+            if (dto.Password == null || dto.Password.Length < 8 || dto.Password.Length > 100) // password check
             {
                 return BadRequest(new { ERROR = "Password size invalid", ERROR_TYPE = "BAD_FORMAT" });
             }
