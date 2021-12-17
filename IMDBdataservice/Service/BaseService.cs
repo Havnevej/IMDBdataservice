@@ -149,7 +149,10 @@ namespace IMDBdataservice.Service
  
             return result;
         }
-
+        public List<string> GetGenres()
+        {
+            return ctx.Genres.Select(genre => genre.GenreName).Distinct().ToListAsync().Result;
+        }
         // Not implemented functions
         public bool AddTitle(Title title) // still needs auto increment
         {

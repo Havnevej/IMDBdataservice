@@ -226,6 +226,15 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("genre")]
+        public IActionResult GetGenres()
+        {
+            var result = _dataService.GetGenres();
+
+            return Ok(result);
+        }
+
 
 
         [HttpPost]
