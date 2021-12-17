@@ -180,17 +180,24 @@ namespace WebAPI.Controllers
             }
             return Ok(result);
         }
-
+        [Authorization]
         [HttpPut]
         [Route("{id}")]
         public IActionResult UpdateTitle(string id, [FromBody] TitleDTO title)
         {
+            User user = (User)HttpContext.Items["User"];
+            Console.WriteLine(user.IsAdmin);
+            if (user.IsAdmin == null)
+            {
+                return StatusCode(401, new { ERROR="Only admins can update titles", ERROR_TYPE="NOT_ALLOWED"});
+            }
             title.TitleId = id;
             if (!_dataService.GetImdbContext().Titles.Any(x => x.TitleId == id))
             {
-                return BadRequest("Id does not exits");
+                return BadRequest(new { ERROR="title does not exist", ERROR_TYPE="NO_DATA"});
             }
-            return Ok(_dataService.UpdateTitle(title));
+            bool updated = _dataService.UpdateTitle(title);
+            return CreatedAtAction(nameof(GetTitle),new {id=title.TitleId},new {UPDATED_TITLE = updated});
 
         }
 
