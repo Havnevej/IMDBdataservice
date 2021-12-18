@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
  
             FirstPage = new Uri(url.Link(route, new HttpRouteValueDictionary(extraValues)
             {
-                {"page", 1},
+                {"page", 0},
                 {"pagesize", pageSize}
             }));
             LastPage = new Uri(url.Link(route, new HttpRouteValueDictionary(extraValues)
@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
                 {"page", pageCount},
                 {"pagesize", pageSize}
             }));
-            if (pageNum > 1)
+            if (pageNum > 0)
             {
                 PreviousPage = new Uri(url.Link(route, new HttpRouteValueDictionary(extraValues)
                 {
