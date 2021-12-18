@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
 
         
 
-        [HttpGet(Name = nameof(GetTitles))]
+        [HttpGet]
         public IActionResult GetTitles([FromQuery] QueryStringOur queryString)
         {
             var title = _dataService.GetTopTitles(queryString).Result;
@@ -69,41 +69,13 @@ namespace WebAPI.Controllers
 
             long total = _dataService.GetImdbContext().Titles.Count();
 
-            var pages = (int)Math.Ceiling((double)total / queryString.PageSize);
+            var linkBuilder = new PageLinkBuilder(Url, "", new { genre = queryString.Genre, needle = queryString.needle }, queryString.Page, queryString.PageSize, total);
+            return Ok(new { Data = title, Paging = linkBuilder });
 
 
-            var prev = (string)null;
-            if (queryString.Page > 0)
-            {
-                prev = Url.Link(nameof(GetTitles), new QueryStringOur { Page = queryString.Page - 1, PageSize = queryString.PageSize});
-            }
-            var next = (string)null;
-            if (queryString.Page < pages - 1)
-            {
-                next = Url.Link(nameof(GetTitles), new QueryStringOur { Page = queryString.Page +1, PageSize = queryString.PageSize });
-            }
-
-            if (title == null)
-            {
-                return NotFound();
-            } else
-            {
-                var result = new
-                {
-                    pageSizes = new int[] { 10, 15, 20 },
-                    count = total,
-                    pages,
-                    prev,
-                    next,
-                    title
-                };
-                return Ok(result);
-            }
-            
-        
             //long total = _dataService.GetImdbContext().Titles.Count();
             //var linkBuilder = new PageLinkBuilder(Url, "", null, queryString.Page, queryString.PageSize, total);
-            
+
             //return Ok(new {Data=ConvertToTitleDto(title), Paging = linkBuilder });
         }
         
