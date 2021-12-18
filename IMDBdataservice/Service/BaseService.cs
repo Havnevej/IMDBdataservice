@@ -138,27 +138,17 @@ namespace IMDBdataservice.Service
             List<Title> result = new();
             if(queryString.Genre != null)
             {
-                result = ctx.Titles.Include(x => x.Genres).Where(x => x.Genres.Any(genre=>genre.GenreName == queryString.Genre)).Include(x => x.TitleRating).Include(x => x.omdb).
-                 Where(x => Convert.ToInt32(x.TitleRating.Votes) > 100000 && x.TitleType != "tvEpisode").
-                 OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
-                 .Take(queryString.PageSize).ToListAsync().Result; //queryString.PageSize
+                result = ctx.Titles.Include(x => x.Genres).Where(x => x.Genres.Any(genre=>genre.GenreName == queryString.Genre)).Include(x => x.TitleRating).Include(x => x.omdb)
+                 .Where(x => x.TitleType != "tvEpisode")
+                 .OrderByDescending(x => Convert.ToInt32(x.TitleRating.Votes))
+                 .Skip(queryString.Page * queryString.PageSize)
+                 .Take(queryString.PageSize).ToListAsync().Result;
             } else
             {
-                var votes_amount = 100000;
                 result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Include(x => x.omdb).
-                     Where(x => Convert.ToInt32(x.TitleRating.Votes) > votes_amount && x.TitleType != "tvEpisode").
-                     OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
+                     Where(x => x.TitleType != "tvEpisode").
+                     OrderByDescending(x => Convert.ToInt32(x.TitleRating.Votes)).Skip(queryString.Page * queryString.PageSize)
                      .Take(queryString.PageSize).ToListAsync().Result;
-                
-                while (result.Count() < 10)
-                {
-                    votes_amount = votes_amount - 10000;
-                    result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Include(x => x.omdb).
-                     Where(x => Convert.ToInt32(x.TitleRating.Votes) > votes_amount && x.TitleType != "tvEpisode").
-                     OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
-                     .Take(queryString.PageSize).ToListAsync().Result;
-                }
-                
             }
  
             return result;
