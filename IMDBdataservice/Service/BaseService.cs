@@ -144,10 +144,21 @@ namespace IMDBdataservice.Service
                  .Take(queryString.PageSize).ToListAsync().Result; //queryString.PageSize
             } else
             {
+                var votes_amount = 100000;
                 result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Include(x => x.omdb).
-                 Where(x => Convert.ToInt32(x.TitleRating.Votes) > 100000 && x.TitleType != "tvEpisode").
-                 OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
-                 .Take(queryString.PageSize).ToListAsync().Result; //queryString.PageSize
+                     Where(x => Convert.ToInt32(x.TitleRating.Votes) > votes_amount && x.TitleType != "tvEpisode").
+                     OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
+                     .Take(queryString.PageSize).ToListAsync().Result;
+                
+                while (result.Count() < 10)
+                {
+                    votes_amount = votes_amount - 10000;
+                    result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Include(x => x.omdb).
+                     Where(x => Convert.ToInt32(x.TitleRating.Votes) > votes_amount && x.TitleType != "tvEpisode").
+                     OrderByDescending(x => x.TitleRating.RatingAvg).Skip(queryString.Page * queryString.PageSize)
+                     .Take(queryString.PageSize).ToListAsync().Result;
+                }
+                
             }
  
             return result;
