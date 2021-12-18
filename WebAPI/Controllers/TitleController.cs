@@ -66,8 +66,14 @@ namespace WebAPI.Controllers
             var title = _dataService.GetTopTitles(queryString).Result;
 
             //var numberOfProducts = _dataService.NumberOfTopTitles();
-
-            long total = _dataService.GetImdbContext().Titles.Count();
+            long total = 0;
+            if(queryString.Genre != null)
+            {
+                total = _dataService.GetImdbContext().Titles.Where(title => title.Genres.Any(g => g.GenreName == queryString.Genre)).Count();
+            } else
+            {
+                total = _dataService.GetImdbContext().Titles.Count();
+            }
 
             var linkBuilder = new PageLinkBuilder(Url, "", new { genre = queryString.Genre, needle = queryString.needle }, queryString.Page, queryString.PageSize, total);
             return Ok(new { Data = title, Paging = linkBuilder });
