@@ -161,8 +161,7 @@ namespace IMDBdataservice.Service
         {
             return ctx.Genres.Select(genre => genre.GenreName).Distinct().ToListAsync().Result;
         }
-        // Not implemented functions
-        public String AddTitle(Title title) // still needs auto increment
+        public String AddTitle(Title title)
         {
             if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId))
             {
@@ -231,22 +230,6 @@ namespace IMDBdataservice.Service
                 .Take(queryString.PageSize).ToList();
             return commentList;
         }
-
-        //public void CreateUser(string username, string password = null, string salt = null)
-        //{
-        //    User user = new()
-        //    {
-        //        UserId = ctx.Users.Max(x => x.UserId) + 1,
-        //        Username = username,
-        //        Password = password,
-        //        Salt = salt,
-        //        CreatedDate = DateTime.Now
-        //    };
-        //    ctx.Add(user);
-        //    ctx.SaveChanges();
-        //}
-
-
         public void CreateUser(string username, string password = null, string salt = null)
         {
             long nextId;
@@ -380,37 +363,5 @@ namespace IMDBdataservice.Service
             }
             return false;
         }
-
-        #region functions todo
-
-        /*
-        public Profession GetProfession(int id, string type)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Person GetPerson(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TitleRating GetTitleRating(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public TitleVersion GetTitleVersion(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Principal GetPrincipal(int id, int ordering)
-        {
-            throw new NotImplementedException();
-        }
-
-        public CharacterName GetCharacterName(int id, string Name){throw new NotImplementedException();}
-        */
-        #endregion
     }
 }
