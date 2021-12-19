@@ -91,17 +91,22 @@ namespace WebAPI.Controllers
         public IActionResult SearchTitleByGenre([FromQuery] QueryStringOur queryString)
         {
             List<Title> result = new();
+
+            // var username = HttpContext.Items["User"].ToString();
+            User user = (User)HttpContext.Items["User"];
+            Console.WriteLine("Username: " + user.Username);
+
             long total = 0;
             if (queryString.Genre == null)
             {
-                result = _dataService.SearchTitles(queryString);
+                result = _dataService.SearchTitles(queryString, user);
                 total = _dataService.GetImdbContext().Titles.
                     Include(x => x.Genres).
                     Include(x => x.TitleRating).
                     Where(x => x.PrimaryTitle == queryString.PrimaryTitle).ToList().Count;
                     //Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
-            } else {
-                result = _dataService.SearchTitleByGenre(queryString).Result;
+            } else { 
+                result = _dataService.SearchTitleByGenre(queryString, user).Result;
                 total = _dataService.GetImdbContext().Titles.Include(x => x.Genres).Include(x => x.TitleRating).
                     Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).ToList().Count;
             }

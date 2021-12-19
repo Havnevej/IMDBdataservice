@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
@@ -25,9 +24,10 @@ namespace IMDBdataservice.Service
          * 
          * 
          */
-        public List<Title> SearchTitles(QueryStringOur queryString)
+        public List<Title> SearchTitles(QueryStringOur queryString, User u)
         {
             List<Title> titleList = new();
+
             titleList = ctx.Titles.
                 Include(x => x.omdb).
                 Include(x => x.director.person).
@@ -44,25 +44,6 @@ namespace IMDBdataservice.Service
                 Where(z => z.TitleId == x.TitleId).ToListAsync().Result;
             });
 
-            //Add search to search history for user.
-            if (queryString.username == null)
-            {
-                Console.WriteLine("no username specified");
-            } 
-            else {
-                //check if username exists before adding to history
-                User u = ctx.Users.FirstOrDefault(x => x.Username.ToLower() == queryString.username.ToLower());
-                if ( u != null && u.Username.ToLower() == queryString.username.ToLower()){
-                    SearchHistory search = new()
-                    {
-                        Username = queryString.username,
-                        SearchString = queryString.needle,
-                        SearchDate = DateTime.Now                
-                    };
-                    ctx.Add(search);
-                    ctx.SaveChanges();
-                }
-            }
             return titleList;
         }
         public Title GetTitle(string id)
@@ -128,9 +109,22 @@ namespace IMDBdataservice.Service
 
         }
 
-        public async Task<List<Title>> SearchTitleByGenre(QueryStringOur queryString)
+        public async Task<List<Title>> SearchTitleByGenre(QueryStringOur queryString, User u = null)
         {
             List<Title> result = new();
+
+            User user = ctx.Users.FirstOrDefault(x => x.Username.ToLower() == u.Username.ToLower());
+            if (u != null && u.Username.ToLower() == queryString.username.ToLower())
+            {
+                SearchHistory search = new()
+                {
+                    Username = queryString.username,
+                    SearchString = queryString.needle,
+                    SearchDate = DateTime.Now
+                };
+                ctx.Add(search);
+                ctx.SaveChanges();
+            }
 
             result = ctx.Titles.Include(x => x.Genres).Include(x => x.TitleRating).Where(x => x.Genres.Any(x => x.GenreName == queryString.Genre)).Skip(queryString.Page * queryString.PageSize)
                 .Take(queryString.PageSize).ToListAsync().Result;
@@ -159,7 +153,7 @@ namespace IMDBdataservice.Service
         }
         public List<string> GetGenres()
         {
-            return ctx.Genres.Select(genre => genre.GenreName).Distinct().ToListAsync().Result;
+            return ctx.Genres.Select(genre => genre.GenreName).Distinct().ToListAsync().Result.OrderBy(t => t).ToList();
         }
         public String AddTitle(Title title)
         {

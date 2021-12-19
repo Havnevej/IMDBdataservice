@@ -12,11 +12,11 @@ namespace IMDBdataservice.Service
         public string AddTitle(Title title);
         public bool RemoveTitle(Title titleToBeRemoved);
         public bool UpdateTitle(TitleDTO title);
-        public List<Title> SearchTitles(QueryStringOur queryString);
+        public List<Title> SearchTitles(QueryStringOur queryString, User u);
         public bool BookmarkTitle(BookmarkTitle bt);
         public object CommentTitle(Comment comment);
         public bool RateTitle(UserTitleRating urt);
-        public Task<List<Title>> SearchTitleByGenre(QueryStringOur queryString);
+        public Task<List<Title>> SearchTitleByGenre(QueryStringOur queryString, User u);
         public Task<List<Title>> GetTopTitles(QueryStringOur queryString);
         public float GetRatingForTitle(string id);
         public List<Comment> GetCommentsByTitleId(string titleId, QueryStringOur queryString);
