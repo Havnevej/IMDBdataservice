@@ -9,7 +9,7 @@ namespace IMDBdataservice.Service
         //Functions go here
         //              TITLE
         public Title GetTitle(string titleId);
-        public bool AddTitle(Title title);
+        public string AddTitle(Title title);
         public bool RemoveTitle(Title titleToBeRemoved);
         public bool UpdateTitle(TitleDTO title);
         public List<Title> SearchTitles(QueryStringOur queryString);

@@ -76,6 +76,7 @@ namespace WebAPI.Controllers
             }
 
             var linkBuilder = new PageLinkBuilder(Url, "", new { genre = queryString.Genre, needle = queryString.needle }, queryString.Page, queryString.PageSize, total);
+            
             return Ok(new { Data = title, Paging = linkBuilder });
 
 
@@ -215,12 +216,22 @@ namespace WebAPI.Controllers
 
         }
 
+        [Authorization]
         [HttpPost]
         [Route("add")]
         public IActionResult AddTitle([FromBody] Title title)
         {
-            var result = _dataService.AddTitle(title);
-            return Ok(title);
+            User user = (User)HttpContext.Items["User"];
+            Console.WriteLine(user.IsAdmin);
+            if (user.IsAdmin == true)
+            {
+                var created_id = _dataService.AddTitle(title);
+                return CreatedAtAction(nameof(GetTitle),new { ID = created_id },title);
+            } else
+            {
+                return StatusCode(401, new { ERROR = "Only admins can add titles", ERROR_TYPE = "NOT_ALLOWED" });
+            }
+
         }
 
         [HttpGet]

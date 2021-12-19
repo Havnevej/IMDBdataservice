@@ -72,8 +72,12 @@ namespace IMDBdataservice.Service
                 Include(x => x.omdb).
                 Include(xx => xx.director.person).
                 FirstOrDefault(x => x.TitleId == id);
-            title.principal = ctx.Principals.Include(x => x.person).
+            if (title != null)
+            {
+                title.principal = ctx.Principals.Include(x => x.person).
                 Where(x => x.TitleId == id && (x.Category == "actor" || x.Category == "actress")).ToListAsync().Result;
+
+            }
             return  title;
         }
 
@@ -158,15 +162,17 @@ namespace IMDBdataservice.Service
             return ctx.Genres.Select(genre => genre.GenreName).Distinct().ToListAsync().Result;
         }
         // Not implemented functions
-        public bool AddTitle(Title title) // still needs auto increment
+        public String AddTitle(Title title) // still needs auto increment
         {
             if (!ctx.Titles.ToList().Any(x => x.TitleId == title.TitleId))
             {
-
+                int nextId = ctx.Titles.ToListAsync().Result.Max(title => Convert.ToInt32(int.Parse(title.TitleId.Split("tt")[1])))+1;
+                title.TitleId = "tt" + nextId.ToString();
                 ctx.Add(title);
-                return ctx.SaveChanges() > 0;
+                ctx.SaveChanges();
+                return title.TitleId;
             }
-            return false;
+            return "error";
         }
         public bool UpdateTitle(TitleDTO title)
         {
