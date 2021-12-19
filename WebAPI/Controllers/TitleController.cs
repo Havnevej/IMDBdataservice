@@ -114,7 +114,7 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             var linkBuilder = new PageLinkBuilder(Url, "", new{genre=queryString.Genre,needle=queryString.needle}, queryString.Page, queryString.PageSize, total);
-            return Ok(new { Data = ConvertToTitleDto(result), Paging = linkBuilder });
+            return Ok(new { Data = result, Paging = linkBuilder });
         }
 
         [Authorization]
