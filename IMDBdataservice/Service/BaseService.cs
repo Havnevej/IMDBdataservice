@@ -65,6 +65,7 @@ namespace IMDBdataservice.Service
                 Include(g => g.Genres).
                 Include(x => x.omdb).
                 Include(xx => xx.director.person).
+                Include(d=>d.TitleRating).
                 FirstOrDefault(x => x.TitleId == id);
             if (title != null)
             {
