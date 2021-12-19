@@ -94,8 +94,6 @@ namespace WebAPI.Controllers
 
             // var username = HttpContext.Items["User"].ToString();
             User user = (User)HttpContext.Items["User"];
-            Console.WriteLine("Username: " + user.Username);
-
             long total = 0;
             if (queryString.Genre == null)
             {

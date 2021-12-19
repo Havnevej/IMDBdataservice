@@ -28,6 +28,19 @@ namespace IMDBdataservice.Service
         {
             List<Title> titleList = new();
 
+            if (u != null)
+            {
+                User user = ctx.Users.FirstOrDefault(x => x.Username.ToLower() == u.Username.ToLower());
+                SearchHistory search = new()
+                {
+                    Username = user.Username,
+                    SearchString = queryString.needle,
+                    SearchDate = DateTime.Now
+                };
+                ctx.Add(search);
+                ctx.SaveChanges();
+            }
+
             titleList = ctx.Titles.
                 Include(x => x.omdb).
                 Include(x => x.director.person).
@@ -113,13 +126,14 @@ namespace IMDBdataservice.Service
         {
             List<Title> result = new();
 
-            User user = ctx.Users.FirstOrDefault(x => x.Username.ToLower() == u.Username.ToLower());
-            if (u != null && u.Username.ToLower() == queryString.username.ToLower())
+            
+            if (u != null)
             {
+                User user = ctx.Users.FirstOrDefault(x => x.Username.ToLower() == u.Username.ToLower());
                 SearchHistory search = new()
                 {
-                    Username = queryString.username,
-                    SearchString = queryString.needle,
+                    Username = user.Username,
+                    SearchString = queryString.Genre,
                     SearchDate = DateTime.Now
                 };
                 ctx.Add(search);
